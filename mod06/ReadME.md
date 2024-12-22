@@ -84,92 +84,130 @@ app.listen(3000, () => {
 ```
 
 
-## User '/SignIn', '/SignUp', '/me' using 'Stateless JWTs' for Encoding
+## User '/SignIn', '/me' Endpoint using 'Stateless JWTs' for Encoding
 
-- for '/sign-in' endpoint use: ```jwt.sign``` 
-- for '/me' endpoint use: ```jwt.verify``` 
+- #### For '/sign-in' endpoint use: ```jwt.sign``` 
 
-```
-//Encoding using JWTs
+    ```
+    const jwt = require('jsonwebtoken')
+    const JWT_SECRET = 'lodhi'
 
-const express = require('express')
-const app = express()                       
-const jwt = require('jsonwebtoken')
+    app.post('/signin', (req, res) => {
 
-app.use(express.json())
-const users = []
-const JWT_SECRET = 'lodhi'
+        const username = req.body.username;
+        const password = req.body.password;
 
-app.post('/signup', (req, res) => {
-    
-    const username = req.body.username;
-    const password = req.body.password;
+        const user = users.find(user => user.username === username && user.password ===password)
 
-    users.push({
-        username,
-        password
+        if (user) {
+            const token = jwt.sign({
+                username: user.username
+            }, JWT_SECRET);
+
+            user.token = token;
+
+            res.send({
+                username,
+                token,
+                message: 'User Signed-In successfully.'
+            })
+
+            console.log(users)
+            
+        } else {
+            res.status(403).send({
+                message: 'Incorrect username or password / UnAuthorized'
+            })
+        }
     })
+    ```
 
-    res.send({
-        username,
-        password,
-        message: 'You Sign-Up successfully'
-    })
+- #### For '/me' endpoint use: ```jwt.verify``` 
 
-    console.log(users);
-    
-})
+    ```
+        app.get('/me', (req, res) => {
+            const token = req.headers.authorization;
 
-app.post('/signin', (req, res) => {
+            const userDetails = jwt.verify(token, JWT_SECRET)
+            const username = userDetails.username
 
-    const username = req.body.username;
-    const password = req.body.password;
+            const foundUser = users.find(user => username === userDetails.username)
 
-    const user = users.find(user => user.username === username && user.password ===password)
+            if (foundUser) {
+                res.send({
+                    username: foundUser.username
+                })
+            } else {
+                res.status(401).send({
+                    message: 'User not found / UnAuthorized'
+                })
+            }
 
-    if (user) {
-        const token = jwt.sign({
-            username: user.username
-        }, JWT_SECRET);
-
-        user.token = token;
-
-        res.send({
-            username,
-            token,
-            message: 'User Signed-In successfully.'
         })
 
-        console.log(users)
+        app.listen(3000, () => {
+            console.log('Server Restarted');  
+        })
+    ```
+
+
+
+## Creation of a 'Auth-Middleware'
+
+- I have created a 'authMiddleware' and passed in below Endpoints such as ('/me')
+
+- #### Redundant res.send in authMiddleware:
+
+    - The middleware sends a response with message: 'User successfully verified.', which ends the response cycle and makes the subsequent call to next() ineffective.
+
+    - Middleware should not send a response unless there is an error (e.g., unauthorized).
+
+    - Even though res.send ends the response, the next() call remains, leading to potential conflicts or unintended behavior.
+
+- #### Auth Middleware :
         
-    } else {
-        res.status(403).send({
-            message: 'Incorrect username or password / UnAuthorized'
-        })
+    ```
+    function authMiddleware (req, res, next) {
+
+        const token = req.headers.authorization;
+
+        if(token) {
+            jwt.verify(token, JWT_SECRET, (err, decoded) => {
+                if(err) {
+                    res.send({
+                        message: 'You are Unauthorized'
+                    })
+                } else {
+                    req.userDetails = decoded
+                    next();         //we don't use res.send in middleware as it end the response and next() doesn't work.
+                }
+            })
+        } else {
+            res.send({
+                message: 'You are Unauthorized'
+            })
+        }
     }
-})
+    ```
 
-app.get('/me', (req, res) => {
-    const token = req.headers.authorization;
+- #### '/me' Endpoint :
+ 
+    ```
+    app.get('/me', authMiddleware, (req, res) => {
 
-    const userDetails = jwt.verify(token, JWT_SECRET)
-    const username = userDetails.username
+        const username = req.userDetails.username; // Use req.userDetails from the middleware
+        const foundUser = users.find(user => user.username === username);
 
-    const foundUser = users.find(user => username === userDetails.username)
+        if (foundUser) {
+            res.send({
+                username: foundUser.username,
+                message: 'You are Authorized',
+            });
+        } else {
+            res.status(404).send({
+                message: 'User not found',
+            });
+        }
+    });
 
-    if (foundUser) {
-        res.send({
-            username: foundUser.username
-        })
-    } else {
-        res.status(401).send({
-            message: 'User not found / UnAuthorized'
-        })
-    }
-
-})
-
-app.listen(3000, () => {
-    console.log('Server Restarted');  
-})
-```
+    ```
