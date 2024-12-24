@@ -1,8 +1,8 @@
 const express = require('express')
 const app = express()
 
-const jwt = require('jsonwebtoken')
-const JWT_SECRET = 'lodhi'
+const bcrypt = require('bcrypt')
+const { authMiddleware, JWT_SECRET } = require('./authMiddleware')
 
 const { mongoose } = require('mongoose')
 const { UserModel, TodoModel } = require('./db')
@@ -16,10 +16,12 @@ app.post('/signup', async (req, res) => {
     const password = req.body.password;
     const email = req.body.email;
 
+    const fixedPassword = await bcrypt.hash(password, 4)
+
     const user = await UserModel.create({
         name: name,
         email: email,
-        password: password
+        password: fixedPassword
     })
 
     res.status(200).json({
@@ -32,14 +34,21 @@ app.post('/signin', async (req, res) => {
     const password = req.body.password;
     const email = req.body.email;
 
-    const user = await UserModel.findOne({
+    const doesUserExist = await UserModel.findOne({
         email,
-        password
     })
 
-    if (user) {
+    if (!doesUserExist) {
+        res.json({
+            message: 'User does not exist in our Database.'
+        })
+    }
+
+    const passwordMatch = bcrypt.compare(password, doesUserExist.password)
+
+    if (passwordMatch) {
         const token = jwt.sign({
-            id: user._id
+            id: doesUserExist._id
         }, JWT_SECRET)
 
         res.status(200).json({
@@ -53,28 +62,6 @@ app.post('/signin', async (req, res) => {
         })
     }
 })
-
-function authMiddleware(req, res, next) {
-
-    const token = req.headers.authorization
-
-    if (token) {
-        jwt.verify(token, JWT_SECRET, (err, decoded) => {
-            if (err) {
-                res.status(401).json({
-                    message: 'User Unauthorized'
-                })
-            } else {
-                req.DecodedData = decoded
-                next()
-            }
-        })
-    } else {
-        res.status(401).json({
-            message: 'User Unauthorized'
-        })
-    }
-}
 
 app.post('/post-todo', authMiddleware, async (req, res) => {
 
