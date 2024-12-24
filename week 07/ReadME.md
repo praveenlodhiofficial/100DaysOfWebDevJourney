@@ -1,219 +1,130 @@
-## User '/SignIn', '/SignUp', '/me' using 'Stateful Token' for authentication
+## Normal Implementation for Todo Application
 
 ```
 const express = require('express')
-const app = express();
+const app = express()
 
-app.use(express.json());
-const users = [];
+const jwt = require('jsonwebtoken')
+const JWT_SECRET = 'lodhi'
 
-function generateToken() {
-    let options = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+const { mongoose } = require('mongoose')
+const { UserModel, TodoModel } = require('./db')
+mongoose.connect('mongodb+srv://praveenlodhiofficial:20204284@cluster0.6edkq.mongodb.net/praveen-todos')
 
-    let token = "";
-    for (let i = 0; i < 32; i++) {
-        // use a simple function here
-        token += options[Math.floor(Math.random() * options.length)];
-    }
-    return token;
-}
+app.use(express.json())
 
-app.post('/signup', (req, res) => {
+app.post('/signup', async (req, res) => {
 
-    const username = req.body.username;
+    const name = req.body.name;
     const password = req.body.password;
+    const email = req.body.email;
 
-    users.push({
-        username,
+    const user = await UserModel.create({
+        name: name,
+        email: email,
+        password: password
+    })
+
+    res.status(200).json({
+        message: 'User signed-up successfully.'
+    })
+})
+
+app.post('/signin', async (req, res) => {
+
+    const password = req.body.password;
+    const email = req.body.email;
+
+    const user = await UserModel.findOne({
+        email,
         password
     })
 
-    res.send({
-        message: 'You have sign-up successfully.'
-    })
-
-
-    console.log('New user signed up:', { username, password });
-    console.log('All users:', users);
-
-})
-
-app.post('/signin', (req, res) => {
-
-    const username = req.body.username;
-    const password = req.body.password;
-
-    const user = users.find(user => user.username === username && user.password === password)
-
     if (user) {
-        const token = generateToken();
-        user.token = token;
+        const token = jwt.sign({
+            id: user._id
+        }, JWT_SECRET)
 
-        res.send({
-            username,
-            token
+        res.status(200).json({
+            email,
+            token,
+            message: 'User signed-in successfully.'
         })
     } else {
-        res.send({
-            message: 'Invalid username or password.'
-        })
-    }
-    console.log(users)
-
-})
-
-app.get('/me', (req, res) => {
-    const token = req.headers.token;
-    let foundUser = users.find(user => user.token === token);
-
-    if (foundUser) {
-        res.send({
-            username: foundUser.username,
-            password: foundUser.password
-        })
-    } else {
-        res.send({
-            message: 'User not found / Unauthorized'
+        res.status(403).json({
+            message: 'Incorrect Credentials'
         })
     }
 })
+
+function authMiddleware(req, res, next) {
+
+    const token = req.headers.authorization
+
+    if (token) {
+        jwt.verify(token, JWT_SECRET, (err, decoded) => {
+            if (err) {
+                res.status(401).json({
+                    message: 'User Unauthorized'
+                })
+            } else {
+                req.DecodedData = decoded
+                next()
+            }
+        })
+    } else {
+        res.status(401).json({
+            message: 'User Unauthorized'
+        })
+    }
+}
+
+app.post('/post-todo', authMiddleware, async (req, res) => {
+
+    const { title, description, isDone } = req.body;
+
+    const UserDetails = req.DecodedData;
+
+    // Create the new todo
+    const todo = await TodoModel.create({
+        title,
+        description,
+        UserId: UserDetails.id,
+        isDone
+    });
+
+    res.status(201).json({
+        message: 'Todo created successfully.',
+        todo
+    });
+});
+
+app.get('/get-todos', authMiddleware, async (req, res) => {
+
+    try {
+        const userId = req.DecodedData.id;
+        const todos = await TodoModel.find({ UserId: userId });
+
+        res.status(200).json({
+            message: 'Todos fetched successfully.',
+            todos
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            message: 'An error occurred while fetching todos.',
+            error: error.message
+        });
+    }
+});
 
 app.listen(3000, () => {
-    console.log('Server Restarted')
+    console.log('Server Restarted \n')
 })
 ```
 
 
-## User '/SignIn', '/me' Endpoint using 'Stateless JWTs' for Encoding
-
-- #### For '/sign-in' endpoint use: ```jwt.sign``` 
-
-    ```
-    const jwt = require('jsonwebtoken')
-    const JWT_SECRET = 'lodhi'
-
-    app.post('/signin', (req, res) => {
-
-        const username = req.body.username;
-        const password = req.body.password;
-
-        const user = users.find(user => user.username === username && user.password ===password)
-
-        if (user) {
-            const token = jwt.sign({
-                username: user.username
-            }, JWT_SECRET);
-
-            user.token = token;
-
-            res.send({
-                username,
-                token,
-                message: 'User Signed-In successfully.'
-            })
-
-            console.log(users)
-            
-        } else {
-            res.status(403).send({
-                message: 'Incorrect username or password / UnAuthorized'
-            })
-        }
-    })
-    ```
-
-- #### For '/me' endpoint use: ```jwt.verify``` 
-
-    ```
-        app.get('/me', (req, res) => {
-            const token = req.headers.authorization;
-
-            const userDetails = jwt.verify(token, JWT_SECRET)
-            const username = userDetails.username
-
-            const foundUser = users.find(user => username === userDetails.username)
-
-            if (foundUser) {
-                res.send({
-                    username: foundUser.username
-                })
-            } else {
-                res.status(401).send({
-                    message: 'User not found / UnAuthorized'
-                })
-            }
-
-        })
-
-        app.listen(3000, () => {
-            console.log('Server Restarted');  
-        })
-    ```
-
-
-
-## Creation of a 'Auth-Middleware'
-
-- I have created a 'authMiddleware' and passed in below Endpoints such as ('/me')
-
-- #### Redundant res.send in authMiddleware:
-
-    - The middleware sends a response with message: 'User successfully verified.', which ends the response cycle and makes the subsequent call to next() ineffective.
-
-    - Middleware should not send a response unless there is an error (e.g., unauthorized).
-
-    - Even though res.send ends the response, the next() call remains, leading to potential conflicts or unintended behavior.
-
-- #### Auth Middleware :
-        
-    ```
-    function authMiddleware (req, res, next) {
-
-        const token = req.headers.authorization;
-
-        if(token) {
-            jwt.verify(token, JWT_SECRET, (err, decoded) => {
-                if(err) {
-                    res.send({
-                        message: 'You are Unauthorized'
-                    })
-                } else {
-                    req.userDetails = decoded
-                    next();         //we don't use res.send in middleware as it end the response and next() doesn't work.
-                }
-            })
-        } else {
-            res.send({
-                message: 'You are Unauthorized'
-            })
-        }
-    }
-    ```
-
-- #### '/me' Endpoint :
- 
-    ```
-    app.get('/me', authMiddleware, (req, res) => {
-
-        const username = req.userDetails.username; // Use req.userDetails from the middleware
-        const foundUser = users.find(user => user.username === username);
-
-        if (foundUser) {
-            res.send({
-                username: foundUser.username,
-                message: 'You are Authorized',
-            });
-        } else {
-            res.status(404).send({
-                message: 'User not found',
-            });
-        }
-    });
-
-    ```
-
-
-## Creating Schema for the Database using 'mongoose'
+## Database Schema
 
 ```
 const mongoose = require('mongoose')
@@ -223,17 +134,21 @@ const ObjectId = mongoose.ObjectId
 
 const User = new Schema ({
     name: String,
-    email: String,
     password: String,
+    email: {
+        unique: true,
+        type: String
+    }
 })
 
 const Todo = new Schema ({
-    UserId: ObjectId,
     title: String,
-    isDone: Boolean,
+    description: String,
+    UserId: ObjectId,
+    isDone: Boolean
 })
 
-const UserModel = mongoose.model('users', User);
+const UserModel = mongoose.model('users', User)
 const TodoModel = mongoose.model('todos', Todo)
 
 module.exports = {
@@ -241,3 +156,92 @@ module.exports = {
     TodoModel: TodoModel
 }
 ```
+
+## Implemented Auth Middleware for different Endpoints in Stack
+
+```
+const jwt = require('jsonwebtoken')
+const JWT_SECRET = 'lodhi'
+
+function authMiddleware(req, res, next) {
+
+    const token = req.headers.authorization
+
+    if (token) {
+        jwt.verify(token, JWT_SECRET, (err, decoded) => {
+            if (err) {
+                res.status(401).json({
+                    message: 'User Unauthorized'
+                })
+            } else {
+                req.DecodedData = decoded
+                next()
+            }
+        })
+    } else {
+        res.status(401).json({
+            message: 'User Unauthorized'
+        })
+    }
+}
+
+module.exports = { authMiddleware, JWT_SECRET };
+```
+
+## Using Bcrypt Package for Password Hashing
+
+- Sign-up Endpoint
+    ```
+    app.post('/signup', async (req, res) => {
+
+        const name = req.body.name;
+        const password = req.body.password;
+        const email = req.body.email;
+
+        const fixedPassword = await bcrypt.hash(password, 4)
+
+        const user = await UserModel.create({
+            name: name,
+            email: email,
+            password: fixedPassword
+        })
+
+        res.status(200).json({
+            message: 'User signed-up successfully.'
+        })
+    })
+    ```
+
+- Sign-in Endpoint
+    ```
+    app.post('/signin', async (req, res) => {
+        const { email, password } = req.body;
+
+        const doesUserExist = await UserModel.findOne({ email });
+
+        if (!doesUserExist) {
+            return res.status(404).json({
+                message: 'User does not exist in our Database.'
+            });
+        }
+
+        const passwordMatch = await bcrypt.compare(password, doesUserExist.password);
+
+        if (passwordMatch) {
+            const token = jwt.sign(
+                { id: doesUserExist._id },
+                JWT_SECRET
+            );
+
+            return res.status(200).json({
+                email,
+                token,
+                message: 'User signed-in successfully.'
+            });
+        } else {
+            return res.status(403).json({
+                message: 'Incorrect Credentials'
+            });
+        }
+    });
+    ```

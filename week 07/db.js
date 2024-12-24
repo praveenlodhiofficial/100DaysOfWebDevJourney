@@ -1,23 +1,23 @@
-const mongoose = require('mongoose')
+const { mongoose } = require("mongoose");
 
 const Schema = mongoose.Schema
 const ObjectId = mongoose.ObjectId
 
-const User = new Schema ({
+const User = {
     name: String,
-    password: String,
     email: {
-        unique: true,
-        type: String
-    }
-})
+        type: String,
+        unique: true
+    },
+    password: String
+}
 
-const Todo = new Schema ({
+const Todo = {
     title: String,
     description: String,
+    isDone: Boolean,
     UserId: ObjectId,
-    isDone: Boolean
-})
+}
 
 const UserModel = mongoose.model('users', User)
 const TodoModel = mongoose.model('todos', Todo)

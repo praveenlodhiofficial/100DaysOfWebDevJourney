@@ -1,65 +1,76 @@
 const express = require('express')
 const app = express()
 
-const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
 const { authMiddleware, JWT_SECRET } = require('./authMiddleware')
 
-const { mongoose } = require('mongoose')
+const bcrypt = require('bcrypt')
+app.use(express.json())
+
+const mongoose = require('mongoose')
 const { UserModel, TodoModel } = require('./db')
 mongoose.connect('mongodb+srv://praveenlodhiofficial:20204284@cluster0.6edkq.mongodb.net/praveen-todos')
 
-app.use(express.json())
-
 app.post('/signup', async (req, res) => {
 
-    const name = req.body.name;
-    const password = req.body.password;
-    const email = req.body.email;
+    const { name, email, password } = req.body;
 
-    const fixedPassword = await bcrypt.hash(password, 4)
+    try {
 
-    const user = await UserModel.create({
-        name: name,
-        email: email,
-        password: fixedPassword
-    })
+        const hashedPassword = await bcrypt.hash(password, 6)
 
-    res.status(200).json({
-        message: 'User signed-up successfully.'
-    })
+        const user = await UserModel.create({
+            name: name,
+            email: email,
+            password: hashedPassword
+        })
+
+        res.json({
+            message: 'User signed-up successfully'
+        })
+
+    } catch (error) {
+
+        console.log(error)
+        res.json({
+            message: 'Unable to signed-up'
+        })
+    }
 })
 
 app.post('/signin', async (req, res) => {
 
-    const password = req.body.password;
-    const email = req.body.email;
+    const { email, password } = req.body;
 
     const doesUserExist = await UserModel.findOne({
-        email,
+        email: email
     })
 
     if (!doesUserExist) {
         res.json({
-            message: 'User does not exist in our Database.'
+            message: 'User does not exist in the Database.'
         })
     }
 
-    const passwordMatch = bcrypt.compare(password, doesUserExist.password)
+    const matchPassword = await bcrypt.compare(password, doesUserExist.password)
 
-    if (passwordMatch) {
+    if (matchPassword) {
+
         const token = jwt.sign({
             id: doesUserExist._id
         }, JWT_SECRET)
 
-        res.status(200).json({
-            email,
-            token,
+        res.json({
+            token: token,
             message: 'User signed-in successfully.'
         })
+
     } else {
-        res.status(403).json({
-            message: 'Incorrect Credentials'
+
+        res.json({
+            message: 'Invalid Credentials'
         })
+
     }
 })
 
@@ -67,21 +78,21 @@ app.post('/post-todo', authMiddleware, async (req, res) => {
 
     const { title, description, isDone } = req.body;
 
-    const UserDetails = req.DecodedData;
+    const UserDetails = req.DecodedData
 
-    // Create the new todo
-    const todo = await TodoModel.create({
-        title,
-        description,
-        UserId: UserDetails.id,
-        isDone
-    });
+    const createTodo = await TodoModel.create({
+        title: title,
+        description: description,
+        isDone: isDone,
+        UserId: UserDetails.id
+    })
 
-    res.status(201).json({
-        message: 'Todo created successfully.',
-        todo
-    });
-});
+    res.json({
+        createTodo,
+        message: 'Todo successfully added'
+    })
+
+})
 
 app.get('/get-todos', authMiddleware, async (req, res) => {
 

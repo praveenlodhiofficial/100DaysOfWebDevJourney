@@ -3,22 +3,22 @@ const JWT_SECRET = 'lodhi'
 
 function authMiddleware(req, res, next) {
 
-    const token = req.headers.authorization
+    const token = req.headers.authorization;
 
     if (token) {
-        jwt.verify(token, JWT_SECRET, (err, decoded) => {
+        jwt.verify(token, JWT_SECRET, (err, decode) => {
             if (err) {
-                res.status(401).json({
-                    message: 'User Unauthorized'
+                res.json({
+                    message: 'User not recognized'
                 })
             } else {
-                req.DecodedData = decoded
-                next()
+                req.DecodedData = decode;
+                next();
             }
         })
     } else {
-        res.status(401).json({
-            message: 'User Unauthorized'
+        res.json({
+            message: 'User not recognized'
         })
     }
 }
