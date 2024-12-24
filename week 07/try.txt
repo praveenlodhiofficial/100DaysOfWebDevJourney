@@ -1,0 +1,129 @@
+{
+        const express = require('express')
+        const app = express()
+
+        const { UserModel, TodoModel } = require('./db')
+        const { mongoose } = require('mongoose')
+
+        mongoose.connect('mongodb+srv://praveenlodhiofficial:20204284@cluster0.6edkq.mongodb.net/praveen-todos')
+
+        const jwt = require('jsonwebtoken')
+        const JWT_SECRET = 'lodhi'
+
+        app.use(express.json())
+
+        app.post('/signup', async (req, res) => {
+
+            const name = req.body.name;
+            const password = req.body.password;
+            const email = req.body.email;
+
+            await UserModel.create({
+                name: name,
+                password: password,
+                email: email,
+            })
+
+            console.log(UserModel)
+
+            res.send({
+                message: 'User signed-up successfully'
+            })
+
+        })
+
+        app.post('/signin', async (req, res) => {
+
+            const password = req.body.password;
+            const email = req.body.email;
+
+            const user = await UserModel.findOne({
+                email: email,
+                password: password,
+            });
+
+            if (user) {
+                const token = jwt.sign({
+                    id: user._id
+                }, JWT_SECRET)
+
+                res.json({
+                    email,
+                    token: token,
+                    message: 'User signed-in successfullyy'
+                })
+
+                console.log(user)
+
+            } else {
+                res.status(403).json({
+                    message: 'Incorrect Credentials'
+                })
+            }
+        })
+
+        // function authMiddleware(req, res, next) {
+
+        //     const token = req.headers.authorization;
+
+        //     if (token) {
+        //         jwt.verify(token, JWT_SECRET, (err, decode) => {
+        //             if (err) {
+        //                 res.send({
+        //                     message: 'User Unauthorized'
+        //                 })
+        //             } else {
+        //                 req.userDetails = decoded
+        //                 next();
+        //             }
+        //         })
+        //     } else {
+        //         res.send({
+        //             message: 'User Unauthorized'
+        //         })
+        //     }
+
+        // }
+
+        // app.post('/todo', authMiddleware, (req, res) => {
+
+        // })
+
+        // app.post('/todos', authMiddleware, (req, res) => {
+
+        // })
+
+
+    app.listen(3000, () => {
+        console.log('Server Restarted \n')
+    })
+}
+
+----------------------------------DB-----------------------------------------
+
+{
+        const mongoose = require('mongoose')
+
+        const Schema = mongoose.Schema
+        const ObjectId = mongoose.ObjectId
+
+        const User = new Schema ({
+            name: String,
+            email: String,
+            password: String,
+        })
+
+        const Todo = new Schema ({
+            UserId: ObjectId,
+            title: String,
+            isDone: Boolean,
+        })
+
+        const UserModel = mongoose.model('users', User);
+        const TodoModel = mongoose.model('todos', Todo)
+
+        module.exports = {
+            UserModel: UserModel,
+            TodoModel: TodoModel
+        }
+}
