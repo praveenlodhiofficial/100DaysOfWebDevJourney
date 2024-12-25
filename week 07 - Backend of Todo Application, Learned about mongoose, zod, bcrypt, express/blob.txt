@@ -1,0 +1,240 @@
+----------- INDEX.JS
+
+{
+    const express = require('express');
+    const app = express();
+
+    const jwt = require('jsonwebtoken');
+    const { authMiddleware, JWT_SECRET } = require('./authMiddleware');
+
+    const bcrypt = require('bcrypt');
+    app.use(express.json());
+
+    const mongoose = require('mongoose');
+    const { UserModel, TodoModel } = require('./db');
+    const { signupSchema, signinSchema, todoSchema } = require('./zodSchemaValidation');
+
+    mongoose.connect('mongodb+srv://praveenlodhiofficial:20204284@cluster0.6edkq.mongodb.net/praveen-todos');
+
+    /* --------------------------------------------------- ENDPOINTS -------------------------------------------------------------- */
+
+    app.post('/signup', async (req, res) => {
+
+        try {
+            // Validate request body
+            signupSchema.parse(req.body);
+
+            const { name, email, password } = req.body;
+
+            const hashedPassword = await bcrypt.hash(password, 6);
+
+            await UserModel.create({
+                name,
+                email,
+                password: hashedPassword,
+            });
+
+            res.status(201).json({
+                message: 'User signed-up successfully',
+            });
+
+        } catch (error) {
+
+            console.error(error);
+            res.status(400).json({
+                message: error.errors ? error.errors[0].message : 'Unable to sign up',
+            });
+            
+        }
+    });
+
+    app.post('/signin', async (req, res) => {
+        try {
+            // Validate request body
+            signinSchema.parse(req.body);
+
+            const { email, password } = req.body;
+
+            const doesUserExist = await UserModel.findOne({ email });
+
+            if (!doesUserExist) {
+                return res.status(404).json({
+                    message: 'User does not exist in the database.',
+                });
+            }
+
+            const matchPassword = await bcrypt.compare(password, doesUserExist.password);
+
+            if (matchPassword) {
+                const token = jwt.sign({ id: doesUserExist._id }, JWT_SECRET);
+
+                res.json({
+                    token,
+                    message: 'User signed-in successfully.',
+                });
+            } else {
+                res.status(401).json({
+                    message: 'Invalid credentials',
+                });
+            }
+        } catch (error) {
+            console.error(error);
+            res.status(400).json({
+                message: error.errors ? error.errors[0].message : 'An error occurred',
+            });
+        }
+    });
+
+    app.post('/post-todo', authMiddleware, async (req, res) => {
+        try {
+            // Validate request body
+            todoSchema.parse(req.body);
+
+            const { title, description, isDone } = req.body;
+            const UserDetails = req.DecodedData;
+
+            const createTodo = await TodoModel.create({
+                title,
+                description,
+                isDone,
+                UserId: UserDetails.id,
+            });
+
+            res.status(201).json({
+                createTodo,
+                message: 'Todo successfully added',
+            });
+        } catch (error) {
+            console.error(error);
+            res.status(400).json({
+                message: error.errors ? error.errors[0].message : 'Unable to create todo',
+            });
+        }
+    });
+
+    app.get('/get-todos', authMiddleware, async (req, res) => {
+        try {
+            const userId = req.DecodedData.id;
+            const todos = await TodoModel.find({ UserId: userId });
+
+            res.status(200).json({
+                message: 'Todos fetched successfully.',
+                todos,
+            });
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({
+                message: 'An error occurred while fetching todos.',
+                error: error.message,
+            });
+        }
+    });
+
+
+    /* ----------------------------------------------- SERVER LISTENING ------------------------------------------------------------ */
+
+    app.listen(3000, () => {
+        console.log('Server Restarted \n');
+    });
+
+}
+
+---------------- ZOD SCHEMA VALIDATION
+
+{
+    const { z } = require('zod');
+
+    // Signup schema
+    const signupSchema = z.object({
+        name: z.string().min(1, 'Name is required').max(50, 'Name is too long'),
+        email: z.string().email('Invalid email address'),
+        password: z.string().min(6, 'Password must be at least 6 characters'),
+    });
+
+    // Signin schema
+    const signinSchema = z.object({
+        email: z.string().email('Invalid email address'),
+        password: z.string().min(6, 'Password must be at least 6 characters'),
+    });
+
+    // Todo creation schema
+    const todoSchema = z.object({
+        title: z.string().min(1, 'Title is required'),
+        description: z.string().optional(),
+        isDone: z.boolean().optional(),
+    });
+
+    module.exports = {
+        signupSchema,
+        signinSchema,
+        todoSchema,
+    };
+
+}
+
+
+------------------ DATABASE.JS
+
+{
+    const { mongoose } = require("mongoose");
+
+    const Schema = mongoose.Schema
+    const ObjectId = mongoose.ObjectId
+
+    const User = {
+        name: String,
+        email: {
+            type: String,
+            unique: true
+        },
+        password: String
+    }
+
+    const Todo = {
+        title: String,
+        description: String,
+        isDone: Boolean,
+        UserId: ObjectId,
+    }
+
+    const UserModel = mongoose.model('users', User)
+    const TodoModel = mongoose.model('todos', Todo)
+
+    module.exports = {
+        UserModel: UserModel,
+        TodoModel: TodoModel
+    }
+
+}
+
+------------------ AUTHMIDDLEWARE.JS
+
+{
+    const jwt = require('jsonwebtoken')
+    const JWT_SECRET = 'lodhi'
+
+    function authMiddleware(req, res, next) {
+
+        const token = req.headers.authorization;
+
+        if (token) {
+            jwt.verify(token, JWT_SECRET, (err, decode) => {
+                if (err) {
+                    res.json({
+                        message: 'User not recognized'
+                    })
+                } else {
+                    req.DecodedData = decode;
+                    next();
+                }
+            })
+        } else {
+            res.json({
+                message: 'User not recognized'
+            })
+        }
+    }
+
+    module.exports = { authMiddleware, JWT_SECRET };
+
+}

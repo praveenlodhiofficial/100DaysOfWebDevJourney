@@ -1,15 +1,15 @@
 const jwt = require('jsonwebtoken')
 const JWT_SECRET = 'lodhi'
 
-function authMiddleware(req, res, next) {
+function authMiddleware (req, res, next) {
 
     const token = req.headers.authorization;
 
     if (token) {
-        jwt.verify(token, JWT_SECRET, (err, decode) => {
+        jwt.verify (token, JWT_SECRET, (err, decode) => {
             if (err) {
-                res.json({
-                    message: 'User not recognized'
+                res.json ({
+                    message: 'User Unauthorized'
                 })
             } else {
                 req.DecodedData = decode;
@@ -17,10 +17,13 @@ function authMiddleware(req, res, next) {
             }
         })
     } else {
-        res.json({
-            message: 'User not recognized'
+        res.json ({
+            message: 'User Unauthorized'
         })
     }
 }
 
-module.exports = { authMiddleware, JWT_SECRET };
+module.exports = {
+    authMiddleware,
+    JWT_SECRET
+}
