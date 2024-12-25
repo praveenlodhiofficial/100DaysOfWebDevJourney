@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken')
 const JWT_ADMIN_SECRET = 'admin secret'
 
 const bcrypt = require('bcrypt')
-const { UserModel, CourseModel, AdminModel, PurchaseModel } = require('../schema/schema')
+const { AdminModel } = require('../schema/admin.schema')
 
 // -----------------------> Admin Routes Endpoints
 

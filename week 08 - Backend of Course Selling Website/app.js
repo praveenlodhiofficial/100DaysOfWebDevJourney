@@ -3,9 +3,9 @@ const app = express();
 app.use(express.json());
 
 const { mongoose } = require('mongoose')
-const { userRouter } = require('./routes/userRouter')
-const { adminRouter } = require('./routes/adminRouter')
-const { courseRouter } = require('./routes/courseRouter')
+const { userRouter } = require('./routes/user.routes')
+const { adminRouter } = require('./routes/admin.routes')
+const { courseRouter } = require('./routes/course.routes')
 
 // -----------------------> Routes
 

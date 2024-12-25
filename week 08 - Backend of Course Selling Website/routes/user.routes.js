@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken')
 const JWT_USER_SECRET = 'user secret'
 
 const bcrypt = require('bcrypt')
-const { UserModel, CourseModel, AdminModel, PurchaseModel } = require('../schema/schema')
+const { UserModel } = require('../schema/user.schema')
 
 
 // -----------------------> User Routes Endpoints
