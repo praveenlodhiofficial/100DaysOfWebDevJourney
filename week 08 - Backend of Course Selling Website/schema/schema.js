@@ -1,8 +1,5 @@
 const { mongoose } = require('mongoose')
 
-console.log('Connected to Compass')
-mongoose.connect('mongodb+srv://praveenlodhiofficial:20204284@cluster0.6edkq.mongodb.net/Course-Selling-Application')
-
 const Schema = mongoose.Schema
 const ObjectId = mongoose.ObjectId
 

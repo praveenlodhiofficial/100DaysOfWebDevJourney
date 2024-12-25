@@ -2,23 +2,21 @@ const express = require('express')
 const app = express();
 app.use(express.json());
 
-const { UserModel, CourseModel, AdminModel, PurchaseModel } = require('./schema/schema')
-
+const { mongoose } = require('mongoose')
 const { userRouter } = require('./routes/userRouter')
 const { adminRouter } = require('./routes/adminRouter')
 const { courseRouter } = require('./routes/courseRouter')
 
-const { mongoose } = require('mongoose')
-// mongoose.connect('')
-
 // -----------------------> Routes
 
-app.use('/user', userRouter)
-app.use('/admin', adminRouter)
-app.use('/courses', courseRouter)
+app.use('/api/v1/user', userRouter)
+app.use('/api/v1/admin', adminRouter)
+app.use('/api/v1/courses', courseRouter)
 
 // -----------------------> Server Listening
 
-app.listen(3000, () => {
+app.listen(3000, async () => {
+    await mongoose.connect('mongodb+srv://praveenlodhiofficial:20204284@cluster0.6edkq.mongodb.net/Course-Selling-Application')
+    console.log('Course-Selling-Application connected with Compass')
     console.log('Server Restarted \n')
 })

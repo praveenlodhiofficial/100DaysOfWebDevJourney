@@ -1,18 +1,89 @@
 const { Router } = require('express')
 const adminRouter = Router()
 
+const jwt = require('jsonwebtoken')
+const JWT_ADMIN_SECRET = 'admin secret'
+
+const bcrypt = require('bcrypt')
+const { UserModel, CourseModel, AdminModel, PurchaseModel } = require('../schema/schema')
+
 // -----------------------> Admin Routes Endpoints
 
-adminRouter.post('/signup', (req, res) => {
-    res.json ({
-        message: 'admin sign-up route'
-    })
+adminRouter.post('/signup', async(req, res) => {
+
+    const { username, firstname, lastname, email, password } = req.body;
+
+    try {
+
+        const hashedPassword = await bcrypt.hash(password, 10)
+
+        const createAdmin = await AdminModel.create({
+            username,
+            firstname,
+            lastname,
+            email,
+            password: hashedPassword
+        })
+
+        res.json({
+            username,
+            email,
+            message: 'Admin signed-up successfully'
+        })
+
+    } catch (error) {
+
+        res.json({
+            message: 'Unable to proceed admin-sign-up process'
+        })
+
+    }
 })
 
-adminRouter.post('/signin', (req, res) => {
-    res.json ({
-        message: 'admin sign-in route'
-    })
+adminRouter.post('/signin', async (req, res) => {
+
+    const { username, email, password } = req.body;
+
+    try {
+
+        const doesAdminExist = await AdminModel.findOne({
+            $or: [{ email }, { username }]
+        })
+
+        if (!doesAdminExist) {
+            res.json({
+                message: 'Admin does not exist in our Database.'
+            })
+        }
+
+        const isPasswordMatched = await bcrypt.compare(password, doesAdminExist.password)
+
+        if (isPasswordMatched) {
+
+            const token = jwt.sign({
+                id: doesAdminExist._id
+            }, JWT_ADMIN_SECRET)
+
+            res.json({
+                token,
+                message: 'User signed-in successfully.'
+            })
+
+        } else {
+
+            res.json({
+                message: 'Invalid Credentials'
+            })
+
+        }
+
+    } catch (error) {
+
+        res.json({
+            message: 'Unable to proceed admin-sign-in process.'
+        })
+
+    }
 })
 
 adminRouter.post('/create-courses', (req, res) => {
