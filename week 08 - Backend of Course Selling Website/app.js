@@ -1,20 +1,24 @@
 const express = require('express')
 const app = express();
-
-const { userRoute } = require('./routes/userRoute')
-const { adminRoute } = require('./routes/adminRoute')
-const { courseRoute } = require('./routes/courseRoute')
-
-const { mongoose } = require('mongoose')
-
 app.use(express.json());
 
+const { UserModel, CourseModel, AdminModel, PurchaseModel } = require('./schema/schema')
 
-app.use('/user', userRoute)
-app.use('/admin', adminRoute)
-app.use('/courses', courseRoute)
+const { userRouter } = require('./routes/userRouter')
+const { adminRouter } = require('./routes/adminRouter')
+const { courseRouter } = require('./routes/courseRouter')
 
+const { mongoose } = require('mongoose')
+// mongoose.connect('')
+
+// -----------------------> Routes
+
+app.use('/user', userRouter)
+app.use('/admin', adminRouter)
+app.use('/courses', courseRouter)
+
+// -----------------------> Server Listening
 
 app.listen(3000, () => {
-    message: 'Server Restarted'
+    console.log('Server Restarted \n')
 })

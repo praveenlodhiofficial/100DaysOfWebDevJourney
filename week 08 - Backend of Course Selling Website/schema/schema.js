@@ -1,13 +1,23 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
-const ObjectId = Schema.Types.ObjectId;
+const { mongoose } = require('mongoose')
 
-// User Schema
-const User = new Schema({
+console.log('Connected to Compass')
+mongoose.connect('mongodb+srv://praveenlodhiofficial:20204284@cluster0.6edkq.mongodb.net/Course-Selling-Application')
+
+const Schema = mongoose.Schema
+const ObjectId = mongoose.ObjectId
+
+const userSchema = new Schema({
     username: {
         type: String,
         unique: true,
         required: true,
+    },
+    firstname: {
+        type: String,
+        required: true,
+    },
+    lastname: {
+        type: String,
     },
     email: {
         type: String,
@@ -16,40 +26,12 @@ const User = new Schema({
     },
     password: {
         type: String,
-        required: true,
-    },
-    purchasedCourses: [
-        {
-            type: ObjectId,
-            ref: 'Course',
-        },
-    ],
-});
-
-// Admin Schema
-const Admin = new Schema({
-    username: {
-        type: String,
         unique: true,
         required: true,
     },
-    email: {
-        type: String,
-        unique: true,
-        required: true,
-    },
-    password: {
-        type: String,
-        required: true,
-    },
-    role: {
-        type: String,
-        default: 'admin',
-    },
-});
+})
 
-// Course Schema
-const Course = new Schema({
+const courseSchema = new Schema({
     title: {
         type: String,
         required: true,
@@ -59,47 +41,65 @@ const Course = new Schema({
         required: true,
     },
     price: {
-        type: Number,
+        type: String,
         required: true,
     },
-    content: {
-        type: [String], // Array to include videos or sections
+    imageURL: {
+        type: String,
         required: true,
     },
     createdBy: {
         type: ObjectId,
-        ref: 'Admin',
         required: true,
     },
-});
+})
 
-// Purchase Schema
-const Purchase = new Schema({
-    user: {
-        type: ObjectId,
-        ref: 'User',
+const adminSchema = new Schema({
+    username: {
+        type: String,
+        unique: true,
         required: true,
     },
-    course: {
-        type: ObjectId,
-        ref: 'Course',
+    firstname: {
+        type: String,
         required: true,
     },
-    purchaseDate: {
-        type: Date,
-        default: Date.now, // Current timestamp by default
+    lastname: {
+        type: String,
     },
-});
+    email: {
+        type: String,
+        unique: true,
+        required: true,
+    },
+    password: {
+        type: String,
+        unique: true,
+        required: true,
+    },
+})
 
-// Models
-const UserModel = mongoose.model('User', User);
-const AdminModel = mongoose.model('Admin', Admin);
-const CourseModel = mongoose.model('Course', Course);
-const PurchaseModel = mongoose.model('Purchase', Purchase);
+const purchaseSchema = new Schema({
+    courseId: {
+        type: ObjectId,
+        required: true,
+        ref: 'courses'
+    },
+    userId: {
+        type: ObjectId,
+        required: true,
+        ref: 'users'
+    }
+})
+
+const UserModel = mongoose.model('users', userSchema)
+const CourseModel = mongoose.model('courses', courseSchema)
+const AdminModel = mongoose.model('admins', adminSchema)
+const PurchaseModel = mongoose.model('purchases', purchaseSchema)
 
 module.exports = {
     UserModel,
-    AdminModel,
     CourseModel,
+    AdminModel,
     PurchaseModel,
-};
+}
