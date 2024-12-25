@@ -1,42 +1,35 @@
-const jwt = require('jsonwebtoken')
-const JWT_SECRET = 'lodhi'
+require('dotenv').config();  // Make sure dotenv is imported first to load environment variables
+const { adminJwtSecret } = require('../config');
+const jwt = require('jsonwebtoken');
 
-function userAuthMiddleware(req, res, next) {
+
+function adminAuthMiddleware(req, res, next) {
     const token = req.headers.authorization;
 
     try {
-
         if (token) {
-
-            jwt.verify(token, JWT_SECRET, (err, decode) => {
+            jwt.verify(token, adminJwtSecret, (err, decode) => {
                 if (err) {
-                    res.json({
-                        message: 'User Unauthorized'
-                    })
+                    return res.status(401).json({
+                        message: 'Admin Unauthorized'
+                    });
                 } else {
                     req.DecodedData = decode;
                     next();
                 }
-            })
-
+            });
         } else {
-
-            res.json({
-                message: 'User Unauthorized'
-            })
-
+            return res.status(401).json({
+                message: 'Admin Unauthorized'
+            });
         }
-
     } catch (error) {
-
-        res.json({
+        return res.status(500).json({
             message: 'Unable to process authorization process'
-        })
-
+        });
     }
 }
 
 module.exports = {
-    userAuthMiddleware,
-    JWT_SECRET
+    adminAuthMiddleware: adminAuthMiddleware
 }

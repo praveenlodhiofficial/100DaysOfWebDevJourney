@@ -1,89 +1,79 @@
-const { Router } = require('express')
-const userRouter = Router()
-const jwt = require('jsonwebtoken')
+require('dotenv').config();  // Make sure dotenv is imported first to load environment variables
+const { authTokenExpiry, userJwtSecret} = require('../config');
 
-const bcrypt = require('bcrypt')
-const { UserModel } = require('../schema/user.schema')
+const express = require('express');
+const userRouter = express.Router();
+const jwt = require('jsonwebtoken');
 
+
+const bcrypt = require('bcrypt');
+const { UserModel } = require('../schema/user.schema');
 
 // -----------------------> User Routes Endpoints
 
 userRouter.post('/signup', async (req, res) => {
-
     const { username, firstname, lastname, email, password } = req.body;
 
     try {
-
-        const hashedPassword = await bcrypt.hash(password, 10)
+        const hashedPassword = await bcrypt.hash(password, 10);
 
         const createUser = await UserModel.create({
             username,
             firstname,
             lastname,
             email,
-            password: hashedPassword
-        })
+            password: hashedPassword,
+        });
 
-        res.json({
+        res.status(201).json({ // 201 Created
             username,
             email,
-            message: 'User signed-up successfully'
-        })
-
+            message: 'User signed-up successfully',
+        });
     } catch (error) {
-
-        res.json({
-            message: 'Unable to proceed sign-up process'
-        })
-
+        res.status(500).json({ // 500 Internal Server Error
+            message: 'Unable to proceed with the sign-up process.',
+        });
     }
-})
+});
 
 userRouter.post('/signin', async (req, res) => {
-
     const { username, email, password } = req.body;
 
     try {
-
         const doesUserExist = await UserModel.findOne({
-            $or: [{ email }, { username }]
-        })
+            $or: [{ email }, { username }],
+        });
 
         if (!doesUserExist) {
-            res.json({
-                message: 'User does not exist in our Database.'
-            })
+            return res.status(404).json({ // 404 Not Found
+                message: 'User does not exist in our database.',
+            });
         }
 
-        const isPasswordMatched = await bcrypt.compare(password, doesUserExist.password)
+        const isPasswordMatched = await bcrypt.compare(password, doesUserExist.password);
 
         if (isPasswordMatched) {
-
             const token = jwt.sign({
-                id: doesUserExist._id
-            }, process.env.JWT_USER_SECRET)
+                    id: doesUserExist._id,
+                }, userJwtSecret, { expiresIn: authTokenExpiry } // Token expiration
+            );
 
-            res.json({
+            res.status(200).json({ // 200 OK
                 token,
-                message: 'User signed-in successfully.'
-            })
-
+                message: 'User signed-in successfully.',
+            });
         } else {
-
-            res.json({
-                message: 'Invalid Credentials'
-            })
-
+            res.status(401).json({ // 401 Unauthorized
+                message: 'Invalid credentials.',
+            });
         }
-
     } catch (error) {
-
-        res.json({
-            message: 'Unable to proceed sign-in process.'
-        })
-
+        res.status(500).json({ // 500 Internal Server Error
+            message: 'Unable to proceed with the sign-in process.',
+        });
     }
-})
+});
 
 userRouter.post('/purchased-courses', async (req, res) => {
     res.json({

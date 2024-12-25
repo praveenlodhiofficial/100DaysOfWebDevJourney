@@ -1,109 +1,101 @@
-const { Router } = require('express')
-const adminRouter = Router()
-const jwt = require('jsonwebtoken')
+require('dotenv').config();  // Make sure dotenv is imported first to load environment variables
+const { authTokenExpiry, adminJwtSecret } = require('../config');
 
-const bcrypt = require('bcrypt')
-const { AdminModel } = require('../schema/admin.schema')
+const express = require('express');
+const adminRouter = express.Router();
+const jwt = require('jsonwebtoken');
+
+
+const bcrypt = require('bcrypt');
+const { AdminModel } = require('../schema/admin.schema');
 
 // -----------------------> Admin Routes Endpoints
 
-adminRouter.post('/signup', async(req, res) => {
-
+adminRouter.post('/signup', async (req, res) => {
     const { username, firstname, lastname, email, password } = req.body;
 
     try {
-
-        const hashedPassword = await bcrypt.hash(password, 10)
+        const hashedPassword = await bcrypt.hash(password, 10);
 
         const createAdmin = await AdminModel.create({
             username,
             firstname,
             lastname,
             email,
-            password: hashedPassword
-        })
+            password: hashedPassword,
+        });
 
-        res.json({
+        res.status(201).json({ // 201 Created
             username,
             email,
-            message: 'Admin signed-up successfully'
-        })
-
+            message: 'Admin signed-up successfully',
+        });
     } catch (error) {
-
-        res.json({
-            message: 'Unable to proceed admin-sign-up process'
-        })
-
+        res.status(500).json({ // 500 Internal Server Error
+            message: 'Unable to proceed with admin sign-up process',
+        });
     }
-})
+});
 
 adminRouter.post('/signin', async (req, res) => {
-
     const { username, email, password } = req.body;
 
     try {
-
         const doesAdminExist = await AdminModel.findOne({
-            $or: [{ email }, { username }]
-        })
+            $or: [{ email }, { username }],
+        });
 
         if (!doesAdminExist) {
-            res.json({
-                message: 'Admin does not exist in our Database.'
-            })
+            return res.status(404).json({ // 404 Not Found
+                message: 'Admin does not exist in our database.',
+            });
         }
 
-        const isPasswordMatched = await bcrypt.compare(password, doesAdminExist.password)
+        //try cookie based authentication in future
+        const isPasswordMatched = await bcrypt.compare(password, doesAdminExist.password);
 
         if (isPasswordMatched) {
-
             const token = jwt.sign({
-                id: doesAdminExist._id
-            }, process.env.JWT_ADMIN_SECRET)
+                id: doesAdminExist._id,
+            }, adminJwtSecret, { expiresIn: authTokenExpiry } // Token expiration
+            );
 
-            res.json({
+            res.status(200).json({ // 200 OK
                 token,
-                message: 'User signed-in successfully.'
-            })
-
+                message: 'User signed-in successfully.',
+            });
         } else {
-
-            res.json({
-                message: 'Invalid Credentials'
-            })
-
+            res.status(401).json({ // 401 Unauthorized
+                message: 'Invalid credentials.',
+            });
         }
-
     } catch (error) {
-
-        res.json({
-            message: 'Unable to proceed admin-sign-in process.'
-        })
-
+        res.status(500).json({ // 500 Internal Server Error
+            message: 'Unable to proceed with admin sign-in process.',
+        });
     }
-})
+});
 
 adminRouter.post('/create-courses', (req, res) => {
-    res.json ({
-        message: 'admin create-courses route'
-    })
-})
+    res.status(200).json({
+        message: 'admin create-courses route',
+    });
+});
 
 adminRouter.post('/update-courses', (req, res) => {
-    res.json ({
-        message: 'admin update-courses route'
-    })
-})
+    res.status(200).json({
+        message: 'admin update-courses route',
+    });
+});
 
 adminRouter.get('/courses/bulk', (req, res) => {
-    res.json ({
-        message: 'admin get-all-courses route'
-    })
-})
+    res.status(200).json({
+        message: 'admin get-all-courses route',
+    });
+});
 
 // -----------------------> Admin Route Exported
 
 module.exports = {
     adminRouter: adminRouter
-}
+};
