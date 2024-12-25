@@ -1,6 +1,9 @@
 const express = require('express')
 const app = express();
+const dotenv = require('dotenv')
+
 app.use(express.json());
+dotenv.config();
 
 const { mongoose } = require('mongoose')
 const { userRouter } = require('./routes/user.routes')
@@ -15,8 +18,8 @@ app.use('/api/v1/courses', courseRouter)
 
 // -----------------------> Server Listening
 
-app.listen(3000, async () => {
-    await mongoose.connect('mongodb+srv://praveenlodhiofficial:20204284@cluster0.6edkq.mongodb.net/Course-Selling-Application')
+app.listen(process.env.PORT, async () => {
+    await mongoose.connect(process.env.MONGODB_URI)
     console.log('Course-Selling-Application connected with Compass')
     console.log('Server Restarted \n')
 })

@@ -1,8 +1,6 @@
 const { Router } = require('express')
 const adminRouter = Router()
-
 const jwt = require('jsonwebtoken')
-const JWT_ADMIN_SECRET = 'admin secret'
 
 const bcrypt = require('bcrypt')
 const { AdminModel } = require('../schema/admin.schema')
@@ -62,7 +60,7 @@ adminRouter.post('/signin', async (req, res) => {
 
             const token = jwt.sign({
                 id: doesAdminExist._id
-            }, JWT_ADMIN_SECRET)
+            }, process.env.JWT_ADMIN_SECRET)
 
             res.json({
                 token,

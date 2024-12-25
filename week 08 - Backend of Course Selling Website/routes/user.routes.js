@@ -1,8 +1,6 @@
 const { Router } = require('express')
 const userRouter = Router()
-
 const jwt = require('jsonwebtoken')
-const JWT_USER_SECRET = 'user secret'
 
 const bcrypt = require('bcrypt')
 const { UserModel } = require('../schema/user.schema')
@@ -63,7 +61,7 @@ userRouter.post('/signin', async (req, res) => {
 
             const token = jwt.sign({
                 id: doesUserExist._id
-            }, JWT_USER_SECRET)
+            }, process.env.JWT_USER_SECRET)
 
             res.json({
                 token,
