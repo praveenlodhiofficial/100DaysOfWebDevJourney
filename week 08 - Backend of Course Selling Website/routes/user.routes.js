@@ -1,88 +1,88 @@
-require('dotenv').config();  // Make sure dotenv is imported first to load environment variables
-const { authTokenExpiry, userJwtSecret} = require('../config');
+const express = require('express')
+const { UserModel } = require('../schema/schema')
+const userRouter = express.Router()
 
-const express = require('express');
-const userRouter = express.Router();
-const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
+const { USER_JWT_SECRET } = require('../config')
+const { userAuthMiddleware } = require('../middleware/user.middlewares')
 
+// ------------------------------------------------------------>
 
-const bcrypt = require('bcrypt');
-const { UserModel } = require('../schema/user.schema');
-
-// -----------------------> User Routes Endpoints
-
-userRouter.post('/signup', async (req, res) => {
-    const { username, firstname, lastname, email, password } = req.body;
+//sign-up
+userRouter.post('/signup', async(req, res) => {
+    const { username, firstname, lastname, email, password } = req.body
 
     try {
-        const hashedPassword = await bcrypt.hash(password, 10);
+        const hashedPassword = await bcrypt.hash(password, 5)
 
         const createUser = await UserModel.create({
-            username,
-            firstname,
-            lastname,
-            email,
+            username, 
+            firstname, 
+            lastname, 
+            email, 
             password: hashedPassword,
-        });
+        })
 
-        res.status(201).json({ // 201 Created
+        res.json ({
             username,
             email,
-            message: 'User signed-up successfully',
-        });
-    } catch (error) {
-        res.status(500).json({ // 500 Internal Server Error
-            message: 'Unable to proceed with the sign-up process.',
-        });
-    }
-});
+            message: 'User signed-up successfully.'
+        })
 
-userRouter.post('/signin', async (req, res) => {
-    const { username, email, password } = req.body;
+    } catch (error) {
+
+        console.log(error)
+        res.json ({
+            message: 'Unable to proceed sign-up process.'
+        })
+        
+    }
+})
+
+//sign-in
+userRouter.post('/signin', async(req, res) => {
+    const { username, email, password } = req.body
 
     try {
         const doesUserExist = await UserModel.findOne({
-            $or: [{ email }, { username }],
-        });
+            $or: [
+                { email },
+                { username },
+            ]
+        })
 
-        if (!doesUserExist) {
-            return res.status(404).json({ // 404 Not Found
-                message: 'User does not exist in our database.',
-            });
+        if(!doesUserExist) {
+            res.json({
+                message: 'User does not exist in our Database'
+            })
         }
 
-        const isPasswordMatched = await bcrypt.compare(password, doesUserExist.password);
+        const isPasswordMatched = await bcrypt.compare(password, doesUserExist.password)
 
         if (isPasswordMatched) {
-            const token = jwt.sign({
-                    id: doesUserExist._id,
-                }, userJwtSecret, { expiresIn: authTokenExpiry } // Token expiration
-            );
+            const token = jwt.sign ({
+                id: doesUserExist._id
+            }, USER_JWT_SECRET)
 
-            res.status(200).json({ // 200 OK
+            res.json ({
                 token,
-                message: 'User signed-in successfully.',
-            });
-        } else {
-            res.status(401).json({ // 401 Unauthorized
-                message: 'Invalid credentials.',
-            });
+                message: 'User signed-up successfully.'
+            })
         }
-    } catch (error) {
-        res.status(500).json({ // 500 Internal Server Error
-            message: 'Unable to proceed with the sign-in process.',
-        });
-    }
-});
 
-userRouter.post('/purchased-courses', async (req, res) => {
-    res.json({
-        message: 'user purchased-courses route'
-    })
+    } catch (error) {
+
+        console.log(error)
+        res.json ({
+            message: 'Unable to proceed sign-in process.'
+        })
+        
+    }
 })
 
-// -----------------------> User Route Exported
+// ------------------------------------------------------------>
 
 module.exports = {
-    userRouter: userRouter
+    userRouter
 }
