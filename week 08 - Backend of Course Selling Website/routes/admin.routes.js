@@ -115,7 +115,10 @@ adminRouter.put('/update-courses', adminAuthMiddleware, async (req, res) => {
 
     try {
         const updateCourse = await CourseModel.updateOne(
-            { _id: courseId },
+            {
+                _id: courseId,
+                // createdBy: adminDetails.id              // here we make sure to update course it must belong to right admin
+            },
             { title, description, price, imageURL }
         );
 
