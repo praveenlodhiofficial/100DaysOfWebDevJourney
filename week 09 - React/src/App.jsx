@@ -1,17 +1,26 @@
-import React from 'react'
-import { useState } from 'react'
+import React, { useState, useEffect } from 'react';
 
-const createCounter = () => {
-  const [count, setCount] = useState(0)
+const App = () => {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCount((prevCount) => prevCount + 1); // Increment count every second
+    }, 1000);
+
+    // Cleanup function to clear the interval when the component unmounts
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <div>
-      <h1 className='text-3xl font-bold uppercase underline'>Create Counter</h1>
-      <div className='p-5 flex gap-5 items-center'>
-        <p>Count: {count}</p>
-        <button onClick={() => setCount(count + 1)} className='border py-1 px-2 rounded bg-black text-white'>Increamenter</button>
+      <div>Count: {count}</div>
+      <div className="flex gap-5">
+        <button onClick={() => setCount(count + 1)}>Incrementer</button>
+        <button onClick={() => setCount(count - 1)}>Decrementer</button>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default createCounter
+export default App;
