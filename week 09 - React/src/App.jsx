@@ -1,29 +1,45 @@
-import React from 'react';
-import ErrorBoundary from './components/ErrorBoundary/ErrorBoundary';
+import React, { createContext, useContext, useState } from 'react';
 
-const FaultyComponent = () => {
-  throw new Error('Intentional Error');
-  return <div>Item No. 05</div>; // This line won't execute.
-};
+const CountContext = createContext();
 
-const App = () => {
+function CountContextProvider({ children }) {
+  const [count, setCount] = useState(0);
+
+  return <CountContext.Provider value={{count, setCount}}>
+    {children}
+  </CountContext.Provider>
+}
+
+function Parent() {
   return (
-    <div className="flex flex-col justify-center gap-5 text-2xl m-10">
-      <div>Item No. 01</div>
-      <div>Item No. 02</div>
-      <div>Item No. 03</div>
-      <div>Item No. 04</div>
-
-      {/* Wrapping FaultyComponent with ErrorBoundary */}
-      <ErrorBoundary>
-        <FaultyComponent />
-      </ErrorBoundary>
-
-      <div>Item No. 06</div>
-      <div>Item No. 07</div>
-
-    </div>
+    <CountContextProvider>
+      <Incrase />
+      <Decrease />
+      <Value />
+    </CountContextProvider>
   );
+}
+
+function Decrease() {
+  const {count, setCount} = useContext(CountContext);
+  return <button onClick={() => setCount(count - 1)}>Decrease</button>;
+}
+
+function Incrase() {
+  const {count, setCount} = useContext(CountContext);
+  return <button onClick={() => setCount(count + 1)}>Increase</button>;
+}
+
+function Value() {
+  const {count} = useContext(CountContext);
+  return <p>Count: {count}</p>;
+}
+
+// App Component
+const App = () => {
+  return <div>
+    <Parent />
+  </div>
 };
 
 export default App;
