@@ -1,45 +1,20 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { useEffect, useState } from 'react'
+import { useTimer } from './hooks/useTimer'
 
-const CountContext = createContext();
-
-function CountContextProvider({ children }) {
-  const [count, setCount] = useState(0);
-
-  return <CountContext.Provider value={{count, setCount}}>
-    {children}
-  </CountContext.Provider>
-}
-
-function Parent() {
-  return (
-    <CountContextProvider>
-      <Incrase />
-      <Decrease />
-      <Value />
-    </CountContextProvider>
-  );
-}
-
-function Decrease() {
-  const {count, setCount} = useContext(CountContext);
-  return <button onClick={() => setCount(count - 1)}>Decrease</button>;
-}
-
-function Incrase() {
-  const {count, setCount} = useContext(CountContext);
-  return <button onClick={() => setCount(count + 1)}>Increase</button>;
-}
-
-function Value() {
-  const {count} = useContext(CountContext);
-  return <p>Count: {count}</p>;
-}
-
-// App Component
 const App = () => {
-  return <div>
-    <Parent />
-  </div>
-};
+  const { count, setPlay, play } = useTimer()
 
-export default App;
+  return (
+    <>
+      <button
+        className="flex border border-black p-1"
+        onClick={() => setPlay (!play)}
+        >
+        { (!play) ? 'Start Timer : ' : 'Stop Timer : ' }
+        {count}
+      </button>
+    </>
+  )
+}
+
+export default App
