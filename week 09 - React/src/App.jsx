@@ -1,38 +1,58 @@
-import React from 'react'
-import { RecoilRoot, useRecoilValue, useSetRecoilState } from 'recoil'
-import { counterAtom } from './store/atoms/counter';
+import React from 'react';
+import { RecoilRoot, atom, selector, useRecoilValue, useSetRecoilState } from 'recoil';
+import { counterAtom } from './store/atoms/counterAtom';
+import { counterSelector } from './store/selectors/counterSelector';
 
-// We always implement our Atom outside the App that's why we shifted to different folder 'src/state/atoms/counter.js'
-
+// Parent component
 function Parent() {
-  return <RecoilRoot>
-    <Value/>
-    <Incrementer/>
-    <Decrementer/>
-  </RecoilRoot>
+  return (
+    <div>
+      <Buttons />
+      <Counter />
+      <IsEven />
+    </div>
+  );
 }
 
-function Incrementer() {
+// Buttons component
+function Buttons() {
   const setCount = useSetRecoilState(counterAtom);
-  return <button className='border border-black m-1 px-2 py-1 rounded text-white bg-black' onClick={() => setCount(count => count + 1)}>Incrementer</button>
+
+  function increase() {
+    setCount((count) => count + 2);
+  }
+
+  function decrease() {
+    setCount((count) => count - 1);
+  }
+
+  return (
+    <div>
+      <button className='border border-black m-1 px-2 py-1 rounded text-white bg-black' onClick={increase}>Increase</button>
+      <button className='border border-black m-1 px-2 py-1 rounded text-white bg-black' onClick={decrease}>Decrease</button>
+    </div>
+  );
 }
 
-function Decrementer() {
-  const setCount = useSetRecoilState(counterAtom);
-  return <button className='border border-black m-1 px-2 py-1 rounded text-white bg-black' onClick={() => setCount(count => count + 1)}>Decrementer</button>
-}
-
-function Value() {
+// Counter component
+function Counter() {
   const count = useRecoilValue(counterAtom);
-  return <div className='px-2 py-1 rounded'>Counter: {count}</div>
+  return <div className='px-2 py-1 rounded'>Count: {count}</div>;
 }
 
+// IsEven component
+function IsEven() {
+  const isEven = useRecoilValue(counterSelector);
+  return <div className='px-2 py-1 rounded'>{isEven ? 'Even' : 'Odd'}</div>;
+}
+
+// App component
 const App = () => {
   return (
-    <>
-    <Parent/>
-    </>
-  )
-}
+    <RecoilRoot>
+      <Parent />
+    </RecoilRoot>
+  );
+};
 
-export default App
+export default App;
