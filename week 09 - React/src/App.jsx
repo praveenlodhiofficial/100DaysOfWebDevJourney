@@ -1,44 +1,38 @@
-import React, { createContext, useContext, useState } from 'react'
+import React from 'react'
+import { RecoilRoot, useRecoilValue, useSetRecoilState } from 'recoil'
+import { counterAtom } from './store/atoms/counter';
 
-const CountContext = createContext();
-
-function CountContextProvider({ children }) {
-  const [count, setCount] = useState(0)
-
-  return <CountContext.Provider value={{ count, setCount }}>
-    {children}
-  </CountContext.Provider>
-}
+// We always implement our Atom outside the App that's why we shifted to different folder 'src/state/atoms/counter.js'
 
 function Parent() {
-  return (
-    <CountContextProvider>
-      <div className="flex flex-col m-1 text">
-        <Value />
-        <Incrementer />
-        <Decrementer />
-      </div>
-    </CountContextProvider>
-  )
+  return <RecoilRoot>
+    <Value/>
+    <Incrementer/>
+    <Decrementer/>
+  </RecoilRoot>
 }
 
 function Incrementer() {
-  const { setCount } = useContext(CountContext)
-  return <button className='border border-black px-2 py-1 rounded m-1 flex w-40 text-white bg-black' onClick={() => setCount(count => count + 1)}>Incrementer</button>
+  const setCount = useSetRecoilState(counterAtom);
+  return <button className='border border-black m-1 px-2 py-1 rounded text-white bg-black' onClick={() => setCount(count => count + 1)}>Incrementer</button>
 }
 
 function Decrementer() {
-  const { setCount } = useContext(CountContext)
-  return <button className='border border-black px-2 py-1 rounded m-1 flex w-40 text-white bg-black' onClick={() => setCount(count => count - 1)}>Decrementer</button>
+  const setCount = useSetRecoilState(counterAtom);
+  return <button className='border border-black m-1 px-2 py-1 rounded text-white bg-black' onClick={() => setCount(count => count + 1)}>Decrementer</button>
 }
 
 function Value() {
-  const { count } = useContext(CountContext)
-  return <div className='border border-black px-2 py-1 rounded m-1 flex w-40'>Count: {count}</div>
+  const count = useRecoilValue(counterAtom);
+  return <div className='px-2 py-1 rounded'>Counter: {count}</div>
 }
 
 const App = () => {
-  return <Parent />
+  return (
+    <>
+    <Parent/>
+    </>
+  )
 }
 
 export default App

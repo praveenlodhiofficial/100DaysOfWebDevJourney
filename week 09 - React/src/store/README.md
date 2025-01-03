@@ -1,0 +1,1 @@
+In store, we store all the files related to the state management files.
