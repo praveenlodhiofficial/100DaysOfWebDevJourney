@@ -1,8 +1,6 @@
-function greet(name) {
-    console.log("Hello, ".concat(name, "."));
+function delayedCall(fn) {
+    setTimeout(fn, 3000);
 }
-function print() {
-    var name = 'Praveen Lodhi';
-    greet(name);
-}
-print();
+delayedCall(function () {
+    console.log('Hello, World');
+});

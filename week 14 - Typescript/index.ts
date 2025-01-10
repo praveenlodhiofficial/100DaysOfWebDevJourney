@@ -1,10 +1,7 @@
-function greet ( name: string ) {
-    console.log(`Hello, ${name}.`)
-}
+function delayedCall(fn: () => void) {
+    setTimeout(fn, 3000);
+} 
 
-function print() {
-    const name: string = 'Praveen Lodhi'
-    greet(name)
-}
-
-print();
+delayedCall(function() {
+    console.log('Hello, World')
+})
