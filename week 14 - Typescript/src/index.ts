@@ -1,11 +1,26 @@
-function maxValue(arr: number[]) {
-    let max = 0;
-    for (let i = 0; i < arr.length; i++) {
-        if (arr[i] > max) {
-            max = arr[i]
-        }
-    }
-    return max;
+interface Legal {
+    name: string,
+    age: number,
 }
 
-console.log(maxValue([1, 2, 3]));
+let users: Legal[] = [{
+    name: 'Praveen',
+    age: 21
+}, {
+    name: 'Piyush',
+    age: 20
+}, {
+    name: 'Shourya',
+    age: 17
+}, {
+    name: 'Parshav',
+    age: 16
+}];
+
+for (let i = 0 ; i < users.length ;  i++) {
+    if (users[i].age >= 18) {
+        console.log(`${users[i].name} is of legal age.`)
+    } else {
+        console.log(`${users[i].name} is not of a legal age.`)
+    }
+}
