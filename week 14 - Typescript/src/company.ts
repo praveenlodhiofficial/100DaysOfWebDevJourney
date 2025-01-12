@@ -1,19 +1,32 @@
-interface employee {
-    employeeName: string;
+interface UsersType {
+    name: string;
     age: number;
-    id?: number;
+    address: {
+        pincode: number;
+        city: string;
+        state: string;
+    };
+    sex?: string; // Optional property
+}
+
+let users: UsersType = {
+    name: 'Praveen Lodhi',
+    age: 21,
+    address: {
+        pincode: 123456,
+        city: 'Mumbai',
+        state: 'Maharashtra'
+    },
+    sex: 'Male'
 };
 
-interface manager {
-    ManagerName: string;
-    department: string;
-};
-
-type TeamLead = employee & manager;
-
-const teamLead: TeamLead = {
-    employeeName: 'praveen',
-    age: 20,
-    ManagerName: 'Lodhi',
-    department: 'CSE',
-};
+function print(users: UsersType) {
+    console.log(`My name is ${users.name}.`);
+    console.log(`My age is ${users.age}.`);
+    if (users.sex) {
+        console.log(`My sex is ${users.sex}.`);
+    } else {
+        console.log('Sex information is not available.');
+    }
+    console.log(`My address is ${users.address.city}, ${users.address.state}, (${users.address.pincode}).`);
+}
