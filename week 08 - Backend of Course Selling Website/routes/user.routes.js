@@ -67,7 +67,7 @@ userRouter.post('/signin', async(req, res) => {
 
             res.json ({
                 token,
-                message: 'User signed-up successfully.'
+                message: 'User signed-in successfully.'
             })
         }
 
