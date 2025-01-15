@@ -1,13 +1,17 @@
 import express from 'express'
 import mongoose from 'mongoose'
 import bcrypt from 'bcrypt'
-import jwt from 'jsonwebtoken'
+import jwt, { JwtPayload } from 'jsonwebtoken'
 
-import { userModel } from './db'
+import { contentModel, userModel } from './db'
+import { userAuthMiddleware } from './middleware'
 
 const appRouter = express.Router()
 
 const JWT_SECRET = 'user-jwt-secret'
+// interface AuthenticatedRequest extends Request {
+//   userDetails?: string | JwtPayload; // Add a custom field to store decoded token details
+// }
 
 // ----------------------------------------------------------> ROUTES
 
@@ -62,7 +66,7 @@ appRouter.post('/signin', async (req, res) => {
             if (isPasswordMatched) {
                 const token = jwt.sign({
                     id: doesUserExist._id
-                }, JWT_SECRET )
+                }, JWT_SECRET)
 
                 res.json({
                     token,
@@ -82,6 +86,44 @@ appRouter.post('/signin', async (req, res) => {
         })
     }
 })
+
+appRouter.post('/content', userAuthMiddleware, async (req: any, res: any) => {
+    try {
+        const userDetails = req.userDetails.id;
+        const { title, tags, link, type } = req.body; 
+
+        // Validate type field
+        const validTypes = ['video', 'images', 'articles'];
+        if (!validTypes.includes(type)) {
+            return res.status(400).json({
+                error: `Invalid type. Allowed values are ${validTypes.join(', ')}.`
+            });
+        }
+
+        // Create the content
+        const createContent = await contentModel.create({
+            title,
+            tags,
+            link,
+            type,
+            userId: userDetails,
+        });
+
+        return res.status(201).json({
+            data: createContent,
+            message: 'Content created successfully.'
+        });
+
+    } catch (error) {
+        console.error('Error creating content:', error);
+        return res.status(500).json({
+            error: 'Internal Server Error.'
+        });
+    }
+});
+
+
+
 
 // ----------------------------------------------------------> EXPORT ROUTES
 
