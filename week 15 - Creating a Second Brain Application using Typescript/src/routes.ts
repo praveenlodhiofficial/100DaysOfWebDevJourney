@@ -89,7 +89,7 @@ appRouter.post('/signin', async (req, res) => {
 
 appRouter.post('/content', userAuthMiddleware, async (req: any, res: any) => {
     try {
-        const userDetails = req.userDetails.id;
+        const userDetails = req.userId.id;
         const { title, tags, link, type } = req.body; 
 
         // Validate type field
@@ -121,6 +121,21 @@ appRouter.post('/content', userAuthMiddleware, async (req: any, res: any) => {
         });
     }
 });
+
+appRouter.get('/content', userAuthMiddleware, async(req: any, res: any) => {
+    const userId = req.userId.id;
+
+    const getContent = await contentModel.find ({
+        userId
+    }).populate('userId', 'username')
+
+    res.json ({
+        getContent,
+        message: 'content fetched successfully.'
+    })
+})
+
+
 
 
 

@@ -27,11 +27,11 @@ const contentSchema = new Schema({
         type: String,
         required: true
     },
-    tags: {
+    tags: [{
         type: mongoose.Types.ObjectId,
         ref: 'Tag',
-        required: true
-    },
+        // required: true
+    }],
     id: {
         type: Schema.Types.ObjectId
     },
@@ -44,13 +44,13 @@ const contentSchema = new Schema({
     },
     userId: {
         type: Schema.Types.ObjectId,
-        ref: 'User',
-        required: true
+        ref: 'users',
+        // required: true
     },
 
 })
 
-const tagsSchema = new Schema ({
+const tagsSchema = new Schema({
 
     title: {
         type: String,
@@ -62,7 +62,7 @@ const tagsSchema = new Schema ({
 
 })
 
-const linkSchema = new Schema ({
+const linkSchema = new Schema({
 
     hash: {
         type: String,

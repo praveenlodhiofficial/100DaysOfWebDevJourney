@@ -21,7 +21,7 @@ function userAuthMiddleware(req: any, res: any, next) {
           });
         } else {
           // @ts-ignore
-          req.userDetails = decode;
+          req.userId = decode;
           next();
         }
       });
