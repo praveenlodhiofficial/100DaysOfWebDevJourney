@@ -135,7 +135,20 @@ appRouter.get('/content', userAuthMiddleware, async(req: any, res: any) => {
     })
 })
 
+appRouter.delete('/content', userAuthMiddleware, async(req: any, res: any) => {
+    const contentId = req.body.contentId;
+    const userId = req.userId.id
 
+    const deleteContent = await contentModel.deleteMany({
+        contentId,
+        userId
+    })
+
+    res.json ({
+        deleteContent,
+        message: 'Content Deleted'
+    })
+})
 
 
 
