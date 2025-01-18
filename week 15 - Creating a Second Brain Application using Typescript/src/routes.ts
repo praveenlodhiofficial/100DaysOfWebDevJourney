@@ -46,7 +46,7 @@ appRouter.post('/signin', async (req, res) => {
 
     const { username, email, password } = req.body;
 
-    try {
+
         const doesUserExist = await userModel.findOne({
             $or: [
                 { username },
@@ -79,16 +79,11 @@ appRouter.post('/signin', async (req, res) => {
             })
         }
 
-    } catch (error) {
-        console.error(error);
-        res.json({
-            message: 'Unable to proceed sign-up process.'
-        })
-    }
+    } 
 })
 
 appRouter.post('/content', userAuthMiddleware, async (req: any, res: any) => {
-    try {
+
         const userDetails = req.userId.id;
         const { title, tags, link, type } = req.body; 
 
@@ -114,12 +109,6 @@ appRouter.post('/content', userAuthMiddleware, async (req: any, res: any) => {
             message: 'Content created successfully.'
         });
 
-    } catch (error) {
-        console.error('Error creating content:', error);
-        return res.status(500).json({
-            error: 'Internal Server Error.'
-        });
-    }
 });
 
 appRouter.get('/content', userAuthMiddleware, async(req: any, res: any) => {
