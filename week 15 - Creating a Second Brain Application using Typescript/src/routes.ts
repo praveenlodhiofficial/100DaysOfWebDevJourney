@@ -1,149 +1,154 @@
 import express from 'express'
-import mongoose from 'mongoose'
 import bcrypt from 'bcrypt'
-import jwt, { JwtPayload } from 'jsonwebtoken'
-
-import { contentModel, userModel } from './db'
-import { userAuthMiddleware } from './middleware'
 
 const appRouter = express.Router()
-
 const JWT_SECRET = 'user-jwt-secret'
-// interface AuthenticatedRequest extends Request {
-//   userDetails?: string | JwtPayload; // Add a custom field to store decoded token details
-// }
+
+import jwt, { JwtPayload } from 'jsonwebtoken'
+import { contentModel, userModel } from './db'
+import { authMiddleware } from './middleware'
 
 // ----------------------------------------------------------> ROUTES
 
 appRouter.post('/signup', async (req, res) => {
-
-    const { username, email, password } = req.body;
-    const hashedPassword = await bcrypt.hash(password, 10)
-
     try {
+        const { username, email, password } = req.body;
+        const hashedPassword = await bcrypt.hash(password, 10)
+
         const createUser = userModel.create({
             username,
             email,
-            password: hashedPassword,
+            password: hashedPassword
         })
 
         res.json({
-            createUser,
-            message: 'User signup successful'
+            username,
+            email,
+            message: 'signup done successfully.'
         })
 
     } catch (error) {
 
-        console.error(error);
         res.json({
-            message: 'Unable to proceed sign-up process.'
+            message: 'signup not working.'
         })
-
     }
 })
 
 appRouter.post('/signin', async (req, res) => {
-
-    const { username, email, password } = req.body;
-
+    try {
+        const { username, email, password } = req.body;
 
         const doesUserExist = await userModel.findOne({
-            $or: [
-                { username },
-                { email },
-            ],
+            $or: [{ email }, { username }],
         })
 
         if (!doesUserExist) {
             res.json({
-                message: 'User does not exist in the Database.'
+                message: 'user does not exist in the database.'
             })
         }
 
         if (doesUserExist && doesUserExist.password) {
-            const isPasswordMatched = await bcrypt.compare(password, doesUserExist.password)
+            const isPasswordMatching = await bcrypt.compare(password, doesUserExist.password)
 
-            if (isPasswordMatched) {
+            if (isPasswordMatching) {
                 const token = jwt.sign({
                     id: doesUserExist._id
                 }, JWT_SECRET)
 
                 res.json({
                     token,
-                    message: 'User signed-up successfully.'
+                    message: 'signin done successfully.'
                 })
             }
-        } else {
-            res.json({
-                message: 'Invalid Credentials'
-            })
         }
 
-    } 
+    } catch (error) {
+
+        res.json({
+            message: 'signin not working.'
+        })
+    }
+
 })
 
-appRouter.post('/content', userAuthMiddleware, async (req: any, res: any) => {
+appRouter.post('/content', authMiddleware, async (req: any, res: any) => {
+    try {
+        const { title, tags, link, type } = req.body;
+        const userId = req.userId.id
 
-        const userDetails = req.userId.id;
-        const { title, tags, link, type } = req.body; 
-
-        // Validate type field
-        const validTypes = ['video', 'images', 'articles'];
-        if (!validTypes.includes(type)) {
-            return res.status(400).json({
-                error: `Invalid type. Allowed values are ${validTypes.join(', ')}.`
-            });
-        }
-
-        // Create the content
-        const createContent = await contentModel.create({
+        const createContent = contentModel.create({
             title,
             tags,
             link,
             type,
-            userId: userDetails,
-        });
+            userId: userId
+        })
 
-        return res.status(201).json({
-            data: createContent,
-            message: 'Content created successfully.'
-        });
+        res.json({
+            createContent: { title, tags, link, type },
+            message: 'content created successfully.'
+        })
 
+    } catch (error) {
+
+        res.json({
+            message: 'unable to create content.'
+        })
+    }
+})
+
+appRouter.get('/content', authMiddleware, async (req: any, res: any) => {
+
+    try {
+        const userId = req.userId.id
+
+        const fetchContent = await contentModel.find({
+            userId: userId
+        }).populate({
+            path: 'userId',
+            select: 'username'
+        })
+
+        res.json({
+            fetchContent,
+            message: 'content fetch successfully'
+        })
+
+    } catch (error) {
+
+        res.json({
+            message: 'unable to fetch content'
+        })
+
+    }
+})
+
+appRouter.delete('/content', authMiddleware, async (req: any, res: any) => {
+    try {
+        const userId = req.userId.id;
+
+        // Delete all content belonging to the user
+        const deleteResult = await contentModel.deleteMany({ userId });
+
+        if (deleteResult.deletedCount > 0) {
+            res.status(200).json({
+                message: 'All content deleted successfully.',
+            });
+        } else {
+            res.status(404).json({
+                message: 'No content found for the user.',
+            });
+        }
+    } catch (error) {
+        console.error('Error deleting content:', error);
+        res.status(500).json({
+            message: 'Unable to delete content.',
+        });
+    }
 });
-
-appRouter.get('/content', userAuthMiddleware, async(req: any, res: any) => {
-    const userId = req.userId.id;
-
-    const getContent = await contentModel.find ({
-        userId
-    }).populate('userId', 'username')
-
-    res.json ({
-        getContent,
-        message: 'content fetched successfully.'
-    })
-})
-
-appRouter.delete('/content', userAuthMiddleware, async(req: any, res: any) => {
-    const contentId = req.body.contentId;
-    const userId = req.userId.id
-
-    const deleteContent = await contentModel.deleteMany({
-        contentId,
-        userId
-    })
-
-    res.json ({
-        deleteContent,
-        message: 'Content Deleted'
-    })
-})
-
-
-
 
 // ----------------------------------------------------------> EXPORT ROUTES
 
-export {
-    appRouter,
-}
+export { appRouter }

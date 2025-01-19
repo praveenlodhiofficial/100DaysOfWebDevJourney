@@ -84,9 +84,4 @@ const linkModel = mongoose.model('links', linkSchema)
 
 // ---------------------------------------------------------->
 
-export {
-    userModel,
-    contentModel,
-    tagsModel,
-    linkModel,
-}
+export { userModel, contentModel, tagsModel, linkModel }
