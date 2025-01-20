@@ -1,18 +1,28 @@
+import { Cards } from './components/Card'
+import { Header } from './components/Header'
 import { SideBar } from './components/SideBar'
-import { Button } from './components/ui/Button'
-import { PlusIcon } from './icons/PlusIcon'
-import { ShareIcon } from './icons/ShareIcon'
 
 const App = () => {
   return (
-    <div className='flex bg-slate-100'>
+<>
+<div className='flex'>
 
-      {/* SideBar */}
-      <div> <SideBar/> </div>
+{/* SideBar */}
+<SideBar />
 
+{/* Main Content */}
+<div className='ml-[20vw] px-12 pt-8 flex flex-col gap-5 bg-slate-100'>
+  <Header />
+  <div className='flex gap-14 flex-wrap'>
+  <Cards />
+  <Cards />
+  <Cards />
+  <Cards />
+  </div>
+</div>
 
-
-    </div>
+</div>
+</>
   )
 }
 
