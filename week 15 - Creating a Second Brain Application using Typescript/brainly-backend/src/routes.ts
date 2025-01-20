@@ -5,8 +5,9 @@ const appRouter = express.Router()
 const JWT_SECRET = 'user-jwt-secret'
 
 import jwt, { JwtPayload } from 'jsonwebtoken'
-import { contentModel, userModel } from './db'
+import { contentModel, linkModel, userModel } from './db'
 import { authMiddleware } from './middleware'
+import { random } from './utils'
 
 // ----------------------------------------------------------> ROUTES
 
@@ -47,7 +48,7 @@ appRouter.post('/signin', async (req, res) => {
             res.json({
                 message: 'user does not exist in the database.'
             })
-        }
+        } 
 
         if (doesUserExist && doesUserExist.password) {
             const isPasswordMatching = await bcrypt.compare(password, doesUserExist.password)
@@ -146,6 +147,50 @@ appRouter.delete('/content', authMiddleware, async (req: any, res: any) => {
         res.status(500).json({
             message: 'Unable to delete content.',
         });
+    }
+});
+
+appRouter.post('/brain/share', authMiddleware, async (req: any, res: any) => {
+    try {
+        const { share } = req.body;
+
+        if (share) {
+            // Check if a link already exists for the user
+            const existingLink = await linkModel.findOne({
+                userId: req.userId.id,
+            });
+
+            if (existingLink) {
+                return res.status(200).json({
+                    hash: existingLink.hash,
+                    message: `Existing sharable link: /share/${existingLink.hash}`,
+                });
+            }
+
+            // Create a new sharable link
+            const hash = random(10);
+            await linkModel.create({
+                userId: req.userId.id,
+                hash,
+            });
+
+            return res.status(201).json({
+                hash,
+                message: `Sharable link created: /share/${hash}`,
+            });
+        } else {
+            // Remove existing sharable link
+            await linkModel.deleteOne({
+                userId: req.userId.id,
+            });
+
+            return res.status(200).json({
+                message: 'Sharable link removed.',
+            });
+        }
+    } catch (error) {
+        console.error('Error in POST /brain/share:', error);
+        res.status(500).json({ error: 'Internal server error' });
     }
 });
 

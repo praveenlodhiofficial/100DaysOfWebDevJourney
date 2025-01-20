@@ -1,5 +1,7 @@
 import React, { ReactElement } from "react";
 
+// ---------------------------------------> INTERFACE
+
 export interface ButtonProps {
   variant: Variant;
   title: string | ReactElement;
@@ -11,9 +13,11 @@ export interface ButtonProps {
 
 type Variant = "primary" | "secondary";
 
+// ---------------------------------------> VARIANT STYLES
+
 const variantStyles = {
-  primary: "text-purple-600 bg-purple-300",
-  secondary: "text-purple-300 bg-purple-600",
+  primary: "text-purple-600 bg-purple-300 min-w-36",
+  secondary: "text-purple-300 bg-purple-600 min-w-36",
 };
 
 const sizeStyles = {
@@ -22,7 +26,7 @@ const sizeStyles = {
   lg: "px-6 py-3 text-md rounded-lg",
 };
 
-
+// ---------------------------------------> EXPORT FUNCTION
 
 export const Button: React.FC<ButtonProps> = ({ variant, title, startIcon, endIcon, size, onClick }) => {
   return (

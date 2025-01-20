@@ -30,7 +30,6 @@ const contentSchema = new Schema({
     tags: [{
         type: mongoose.Types.ObjectId,
         ref: 'Tag',
-        // required: true
     }],
     id: {
         type: Schema.Types.ObjectId
@@ -43,9 +42,9 @@ const contentSchema = new Schema({
         enum: ['video', 'images', 'articles']
     },
     userId: {
-        type: Schema.Types.ObjectId,
-        ref: 'users',
-        // required: true
+        type: mongoose.Types.ObjectId,
+        ref: 'User',
+        required: true
     },
 
 })
@@ -68,19 +67,20 @@ const linkSchema = new Schema({
         type: String,
     },
     userId: {
-        type: Schema.Types.ObjectId,
+        type: mongoose.Types.ObjectId,
         ref: 'User',
         required: true,
+        unique: true,
     },
 
 })
 
 // ---------------------------------------------------------->
 
-const userModel = mongoose.model('users', userSchema)
-const contentModel = mongoose.model('contents', contentSchema)
-const tagsModel = mongoose.model('tags', tagsSchema)
-const linkModel = mongoose.model('links', linkSchema)
+const userModel = mongoose.model('User', userSchema)
+const contentModel = mongoose.model('Content', contentSchema)
+const tagsModel = mongoose.model('Tag', tagsSchema)
+const linkModel = mongoose.model('Link', linkSchema)
 
 // ---------------------------------------------------------->
 

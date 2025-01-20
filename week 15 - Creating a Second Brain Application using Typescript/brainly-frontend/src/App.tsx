@@ -5,8 +5,8 @@ import { ShareIcon } from './icons/ShareIcon'
 const App = () => {
   return (
     <>
-      <Button variant="primary" title="Add" size="md" startIcon={<PlusIcon size='md'/>} onClick={() => alert("Button clicked!")}/>
-      <Button variant="secondary" title="Share" size="md" startIcon={<ShareIcon size='md'/>} onClick={() => alert("Button clicked!")}/>
+      <Button variant="secondary" title="Add Content" size="md" startIcon={<PlusIcon size='md'/>} onClick={() => alert("Button clicked!")}/>
+      <Button variant="primary" title="Share Brain" size="md" startIcon={<ShareIcon size='md'/>} onClick={() => alert("Button clicked!")}/>
     </>
   )
 }
