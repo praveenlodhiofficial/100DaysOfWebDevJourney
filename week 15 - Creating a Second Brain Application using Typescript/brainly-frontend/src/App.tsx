@@ -1,13 +1,18 @@
+import { SideBar } from './components/SideBar'
 import { Button } from './components/ui/Button'
 import { PlusIcon } from './icons/PlusIcon'
 import { ShareIcon } from './icons/ShareIcon'
 
 const App = () => {
   return (
-    <>
-      <Button variant="secondary" title="Add Content" size="md" startIcon={<PlusIcon size='md'/>} onClick={() => alert("Button clicked!")}/>
-      <Button variant="primary" title="Share Brain" size="md" startIcon={<ShareIcon size='md'/>} onClick={() => alert("Button clicked!")}/>
-    </>
+    <div className='flex bg-slate-100'>
+
+      {/* SideBar */}
+      <div> <SideBar/> </div>
+
+
+
+    </div>
   )
 }
 

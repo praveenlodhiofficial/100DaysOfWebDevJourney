@@ -163,7 +163,7 @@ appRouter.post('/brain/share', authMiddleware, async (req: any, res: any) => {
             if (existingLink) {
                 return res.status(200).json({
                     hash: existingLink.hash,
-                    message: `Existing sharable link: /share/${existingLink.hash}`,
+                    message: `Existing sharable link: /api/v1/brain/${existingLink.hash}`,
                 });
             }
 
@@ -176,7 +176,7 @@ appRouter.post('/brain/share', authMiddleware, async (req: any, res: any) => {
 
             return res.status(201).json({
                 hash,
-                message: `Sharable link created: /share/${hash}`,
+                message: `Sharable link created: /api/v1/brain/${hash}`,
             });
         } else {
             // Remove existing sharable link
@@ -190,6 +190,30 @@ appRouter.post('/brain/share', authMiddleware, async (req: any, res: any) => {
         }
     } catch (error) {
         console.error('Error in POST /brain/share:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+appRouter.get('/brain/:shareLink', async (req: any, res: any) => {
+    try {
+        const { shareLink: hash } = req.params;
+
+        // Find the link by hash
+        const link = await linkModel.findOne({ hash });
+
+        if (!link) {
+            return res.status(404).json({ 
+                message: 'Link not found' 
+            });
+        }
+
+        // Return link details (customize this based on your requirements)
+        return res.status(200).json({
+            message: 'Link retrieved successfully',
+            link,
+        });
+    } catch (error) {
+        console.error('Error in GET /brain/:shareLink:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });
