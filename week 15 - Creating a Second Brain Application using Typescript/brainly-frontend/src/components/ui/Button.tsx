@@ -1,36 +1,36 @@
-import { ReactElement } from "react";
+import React, { ReactElement } from "react";
 
-interface ButtonInterface {
-    title: string;
-    size: "lg" | "sm" | "md";
-    startIcon?: ReactElement;
-    endIcon?: ReactElement;
-    variant: "primary" | "secondary";
+export interface ButtonProps {
+  variant: Variant;
+  title: string | ReactElement;
+  startIcon?: ReactElement;
+  endIcon?: ReactElement;
+  size: "sm" | "md" | "lg";
+  onClick: () => void;
 }
 
-const sizeStyles = {
-    "lg": "px-8 py-4 text-xl rounded-xl",
-    "md": "px-4 py-2 text-md rounded-md",
-    "sm": "px-2 py-1 text-sm rounded-sm",
-}
-
+type Variant = "primary" | "secondary";
 
 const variantStyles = {
-    "primary": "bg-purple-600 text-white",
-    "secondary": "bg-purple-400 text-purple-600",
-}
+  primary: "text-purple-600 bg-purple-300",
+  secondary: "text-purple-300 bg-purple-600",
+};
 
-export function Button(props: ButtonInterface) {
-    // const Comp = props.startIcon;
-    return <button className={sizeStyles[props.size] + " " + variantStyles[props.variant]}>
-        <div className="flex items-center">
-            {/* <span className="text-xs">
-                <Comp size={props.size} />
-            </span> */}
-            <div className="pl-2 pr-2">
-                {props.title}
-            </div>
-            {props.endIcon}
-        </div>
+const sizeStyles = {
+  sm: "px-2 py-1 text-xs rounded-sm",
+  md: "px-4 py-2 text-sm rounded-md",
+  lg: "px-6 py-3 text-md rounded-lg",
+};
+
+
+
+export const Button: React.FC<ButtonProps> = ({ variant, title, startIcon, endIcon, size, onClick }) => {
+  return (
+    <button
+      onClick={onClick}
+      className={`flex items-center justify-center gap-2 ${variantStyles[variant]} ${sizeStyles[size]}`}
+    >
+      {startIcon} {title} {endIcon}
     </button>
-}
+  );
+};
