@@ -4,25 +4,25 @@ import { SideBar } from './components/SideBar'
 
 const App = () => {
   return (
-<>
-<div className='flex'>
+    <>
+      <div className='flex'>
 
-{/* SideBar */}
-<SideBar />
+        {/* SideBar */}
+        <SideBar />
 
-{/* Main Content */}
-<div className='ml-[20vw] px-12 pt-8 flex flex-col gap-5 bg-slate-100'>
-  <Header />
-  <div className='flex gap-14 flex-wrap'>
-  <Cards />
-  <Cards />
-  <Cards />
-  <Cards />
-  </div>
-</div>
+        {/* Main Content */}
+        <div className='ml-[20vw] w-full px-10 pt-8 flex flex-col gap-5 bg-slate-100'>
+          <Header />
+          <div className="grid grid-cols-3 gap-5">
+            <Cards />
+            <Cards />
+            <Cards />
+            <Cards />
+          </div>
+        </div>
 
-</div>
-</>
+      </div>
+    </>
   )
 }
 
