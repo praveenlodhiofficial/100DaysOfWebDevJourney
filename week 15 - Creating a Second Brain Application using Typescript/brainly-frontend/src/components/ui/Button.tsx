@@ -8,7 +8,7 @@ export interface ButtonProps {
   startIcon?: ReactElement;
   endIcon?: ReactElement;
   size: "sm" | "md" | "lg";
-  onClick: () => void;
+  onClick?: () => void;
 }
 
 type Variant = "primary" | "secondary";

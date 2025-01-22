@@ -16,31 +16,31 @@ export const SideBar = () => {
                 <div className="text-sm">
 
                     {/* Twitter */}
-                    <div className="py-2 flex gap-3 items-center">
+                    <div className="py-2 flex gap-3 items-center hover:bg-slate-200 hover:rounded-md transition-all duration-150 hover:px-2 hover:cursor-pointer">
                         <TweetIcon size="md"/>
                         Tweets
                     </div>
 
                     {/* Videos */}
-                    <div className="py-2 flex gap-3 items-center">
+                    <div className="py-2 flex gap-3 items-center hover:bg-slate-200 hover:rounded-md transition-all duration-150 hover:px-2 hover:cursor-pointer">
                     <VideoIcon size="md"/>
                         Videos
                     </div>
 
                     {/* Documents */}
-                    <div className="py-2 flex gap-3 items-center">
+                    <div className="py-2 flex gap-3 items-center hover:bg-slate-200 hover:rounded-md transition-all duration-150 hover:px-2 hover:cursor-pointer">
                     <DocumentIcon size="md"/>
                         Documents
                     </div>
 
                     {/* Links */}
-                    <div className="py-2 flex gap-3 items-center">
+                    <div className="py-2 flex gap-3 items-center hover:bg-slate-200 hover:rounded-md transition-all duration-150 hover:px-2 hover:cursor-pointer">
                     <LinksIcon size="md"/>
                         Links
                     </div>
 
                     {/* Tags */}
-                    <div className="py-2 flex gap-3 items-center">
+                    <div className="py-2 flex gap-3 items-center hover:bg-slate-200 hover:rounded-md transition-all duration-150 hover:px-2 hover:cursor-pointer">
                     <TagsIcon size="md"/>
                         Tags
                     </div>
