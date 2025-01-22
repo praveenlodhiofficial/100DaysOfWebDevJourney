@@ -11,13 +11,24 @@ const App = () => {
         <SideBar />
 
         {/* Main Content */}
-        <div className='ml-[20vw] w-full px-10 pt-8 flex flex-col gap-5 bg-slate-100'>
+        <div className='ml-[20vw] h-full w-full px-10 pt-8 flex flex-col gap-5 bg-slate-100'>
           <Header />
           <div className="grid grid-cols-3 gap-5">
-            <Cards />
-            <Cards />
-            <Cards />
-            <Cards />
+
+            <Cards
+              brainTitle="LLM Tweet"
+              brainLink="https://twitter.com/praveenlodhi99/status/1873186043769630935?ref_src=twsrc%5Etfw"
+              brainType="twitter"
+              brainDescription=""
+            />
+
+            <Cards
+              brainTitle="Harkirat YT Video"
+              brainLink="https://www.youtube.com/embed/Qfd00VQ2W1Y?si = jlGCHzi3UPSS1sdS"
+              brainType="youtube"
+              brainDescription="This ia a YT video from the Tushar Channel, about video transmisson."
+            />
+            
           </div>
         </div>
 
@@ -27,6 +38,7 @@ const App = () => {
 }
 
 export default App
+
 
 
 

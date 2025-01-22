@@ -16,31 +16,31 @@ export const SideBar = () => {
                 <div className="text-sm">
 
                     {/* Twitter */}
-                    <div className="py-2 flex gap-1 items-center">
+                    <div className="py-2 flex gap-3 items-center">
                         <TweetIcon size="md"/>
                         Tweets
                     </div>
 
                     {/* Videos */}
-                    <div className="py-2 flex gap-1 items-center">
+                    <div className="py-2 flex gap-3 items-center">
                     <VideoIcon size="md"/>
                         Videos
                     </div>
 
                     {/* Documents */}
-                    <div className="py-2 flex gap-1 items-center">
+                    <div className="py-2 flex gap-3 items-center">
                     <DocumentIcon size="md"/>
                         Documents
                     </div>
 
                     {/* Links */}
-                    <div className="py-2 flex gap-1 items-center">
+                    <div className="py-2 flex gap-3 items-center">
                     <LinksIcon size="md"/>
                         Links
                     </div>
 
                     {/* Tags */}
-                    <div className="py-2 flex gap-1 items-center">
+                    <div className="py-2 flex gap-3 items-center">
                     <TagsIcon size="md"/>
                         Tags
                     </div>

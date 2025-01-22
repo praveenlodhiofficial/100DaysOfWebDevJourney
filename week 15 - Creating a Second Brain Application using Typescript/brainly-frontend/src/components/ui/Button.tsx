@@ -17,7 +17,7 @@ type Variant = "primary" | "secondary";
 
 const variantStyles = {
   primary: "text-purple-600 bg-purple-300 min-w-36",
-  secondary: "text-purple-300 bg-purple-600 min-w-36",
+  secondary: "text-white bg-purple-600 min-w-36",
 };
 
 const sizeStyles = {
