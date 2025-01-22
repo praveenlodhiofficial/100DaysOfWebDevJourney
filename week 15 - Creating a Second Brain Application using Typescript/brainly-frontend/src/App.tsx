@@ -1,10 +1,18 @@
+import { useState } from 'react'
 import { Cards } from './components/Card'
+import CreateContentModel from './components/CreateContentModel'
 import { Header } from './components/Header'
 import { SideBar } from './components/SideBar'
 
 const App = () => {
+  const [createContent, setCreateContent] = useState(false)
+
   return (
     <>
+      {createContent && (
+        <CreateContentModel onClose={() => setCreateContent(false)} />
+      )}
+
       <div className='flex'>
 
         {/* SideBar */}
@@ -12,7 +20,8 @@ const App = () => {
 
         {/* Main Content */}
         <div className='ml-[20vw] h-full w-full px-10 pt-8 flex flex-col gap-5 bg-slate-100'>
-          <Header />
+
+          <Header open={() => setCreateContent(true)} />
           <div className="grid grid-cols-3 gap-5">
 
             <Cards
@@ -28,7 +37,21 @@ const App = () => {
               brainType="youtube"
               brainDescription="This ia a YT video from the Tushar Channel, about video transmisson."
             />
-            
+
+            <Cards
+              brainTitle="Harkirat YT Video"
+              brainLink="https://www.youtube.com/embed/Qfd00VQ2W1Y?si = jlGCHzi3UPSS1sdS"
+              brainType="youtube"
+              brainDescription="This ia a YT video from the Tushar Channel, about video transmisson."
+            />
+
+            <Cards
+              brainTitle="Harkirat YT Video"
+              brainLink="https://www.youtube.com/embed/Qfd00VQ2W1Y?si = jlGCHzi3UPSS1sdS"
+              brainType="youtube"
+              brainDescription="This ia a YT video from the Tushar Channel, about video transmisson."
+            />
+
           </div>
         </div>
 
@@ -38,75 +61,3 @@ const App = () => {
 }
 
 export default App
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// import './App.css'
-// import { Button } from './components/ui/Button'
-// import { PlusIcon } from './icons/PlusIcon'
-// import { ShareIcon } from './icons/ShareIcon'
-
-// function App() {
-
-//   return (
-//     <>
-//       <Button
-//         variant={"primary"}
-//         startIcon={<PlusIcon size={"lg"} />}
-//         endIcon={<ShareIcon size={"lg"} />}
-//         size="lg"
-//         title={"Share"}
-//       ></Button>
-
-// <Button
-//         variant={"secondary"}
-//         startIcon={<PlusIcon size={"lg"} />}
-//         endIcon={<ShareIcon size={"lg"} />}
-//         size="lg"
-//         title={"Share"}
-//       ></Button>
-
-
-// <Button
-//         variant={"primary"}
-//         startIcon={<PlusIcon />}
-//         endIcon={<ShareIcon />}
-//         size="sm"
-//         title={"Share"}
-//       ></Button>
-
-
-// <Button
-//         variant={"primary"}
-//         startIcon={<PlusIcon size={"md"} />}
-//         endIcon={<ShareIcon size={"md"} />}
-//         size="md"
-//         title={"Share"}
-//       ></Button>
-//     </>
-//   )
-// }
-
-// export default App
