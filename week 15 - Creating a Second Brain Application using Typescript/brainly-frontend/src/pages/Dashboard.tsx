@@ -1,28 +1,40 @@
-import { useState } from "react"
-import { Cards } from "../components/Card"
-import CreateContentModel from "../components/CreateContentModel"
-import { Header } from "../components/Header"
-import { SideBar } from "../components/SideBar"
+import { useState } from "react";
+import { Cards } from "../components/Card";
+import CreateContentModel from "../components/CreateContentModel";
+import { Header } from "../components/Header";
+import { SideBar } from "../components/SideBar";
+import { useContent } from "../hooks/useContent";
 
 export const Dashboard = () => {
-  const [createContent, setCreateContent] = useState(false)
+  const [createContent, setCreateContent] = useState(false);
+  const contents = useContent(); // Destructure loading and error states
+
+  const handleOpenModel = () => setCreateContent(true);
+  const handleCloseModel = () => setCreateContent(false);
 
   return (
     <>
-      {createContent && (
-        <CreateContentModel onClose={() => setCreateContent(false)} />
-      )}
+      {createContent && <CreateContentModel onClose={handleCloseModel} />}
 
-      <div className='flex'>
-
+      <div className="flex">
         {/* SideBar */}
         <SideBar />
 
         {/* Main Content */}
-        <div className='ml-[20vw] h-full w-full px-10 pt-8 flex flex-col gap-5 bg-slate-100'>
+        <div className="flex flex-col gap-5 w-full h-full px-10 pt-8 ml-[20vw] bg-slate-100">
+          <Header open={handleOpenModel} />
 
-          <Header open={() => setCreateContent(true)} />
           <div className="grid grid-cols-3 gap-5">
+            {contents && contents.map(({ type, link, title, description }) => (
+              `${<Cards
+                brainTitle={title}
+                brainLink={link}
+                brainType={type}
+                brainDescription={description}
+              />
+              }`
+            ))
+            }
 
             <Cards
               brainTitle="LLM Tweet"
@@ -33,29 +45,13 @@ export const Dashboard = () => {
 
             <Cards
               brainTitle="Harkirat YT Video"
-              brainLink="https://www.youtube.com/embed/Qfd00VQ2W1Y?si = jlGCHzi3UPSS1sdS"
+              brainLink="https://www.youtube.com/embed/Qfd00VQ2W1Y?si"
               brainType="youtube"
-              brainDescription="This ia a YT video from the Tushar Channel, about video transmisson."
+              brainDescription="This ia a YT video from the Tushar Channel, about video transmission."
             />
-
-            <Cards
-              brainTitle="Harkirat YT Video"
-              brainLink="https://www.youtube.com/embed/Qfd00VQ2W1Y?si = jlGCHzi3UPSS1sdS"
-              brainType="youtube"
-              brainDescription="This ia a YT video from the Tushar Channel, about video transmisson."
-            />
-
-            <Cards
-              brainTitle="Harkirat YT Video"
-              brainLink="https://www.youtube.com/embed/Qfd00VQ2W1Y?si = jlGCHzi3UPSS1sdS"
-              brainType="youtube"
-              brainDescription="This ia a YT video from the Tushar Channel, about video transmisson."
-            />
-
           </div>
         </div>
-
       </div>
     </>
-  )
-}
+  );
+};

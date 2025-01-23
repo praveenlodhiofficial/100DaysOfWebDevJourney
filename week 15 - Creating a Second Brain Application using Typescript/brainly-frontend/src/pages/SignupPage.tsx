@@ -25,7 +25,7 @@ export const SignupPage = () => {
         }
 
         try {
-            await axios.post(BACKEND_URL + "api/v1/signup", {
+            await axios.post(`${BACKEND_URL}/api/v1/signup`, {
                 username,
                 email,
                 password,

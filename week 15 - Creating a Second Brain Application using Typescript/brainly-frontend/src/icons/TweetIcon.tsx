@@ -6,9 +6,9 @@ interface TweetIconProps {
   
   // Size variants for different sizes
   const sizeVariants: Record<"sm" | "md" | "lg", string> = {
-    sm: "w-4 h-4", // Tailwind classes for size
-    md: "w-6 h-6",
-    lg: "w-8 h-8",
+    md: "w-4 h-4", // Tailwind classes for size
+    lg: "w-6 h-6",
+    sm: "w-2 h-2",
   };
   
   export function TweetIcon({ size = "sm", className = "", color = "#3f434a"  }: TweetIconProps) {

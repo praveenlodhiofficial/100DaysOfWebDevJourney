@@ -25,11 +25,15 @@ export const SigninPage = () => {
         }
 
         try {
-            // Make the sign-in request
-            const response = await axios.post(BACKEND_URL + "api/v1/signin", {
+            const response = await axios.post(`${BACKEND_URL}/api/v1/content`, {
                 usernameOrEmail,
                 password,
             });
+            // Make the sign-in request
+            // const response = await axios.post(BACKEND_URL + "api/v1/signin", {
+            //     usernameOrEmail,
+            //     password,
+            // });
 
             // Extract JWT token and store it in localStorage
             const jwt = response.data.token;

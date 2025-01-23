@@ -22,15 +22,16 @@ const userSchema = new Schema({
 })
 
 const contentSchema = new Schema({
-
     title: {
         type: String,
         required: true
     },
-    tags: [{
-        type: mongoose.Types.ObjectId,
-        ref: 'Tag',
-    }],
+    tags: [
+        {
+            type: mongoose.Types.ObjectId,
+            ref: 'Tag',
+        }
+    ],
     id: {
         type: Schema.Types.ObjectId
     },
@@ -39,15 +40,18 @@ const contentSchema = new Schema({
     },
     type: {
         type: String,
-        enum: ['video', 'images', 'articles']
+        enum: ['video', 'images', 'articles', 'youtube', 'twitter'], // Add 'youtube' and 'twitter'
+        required: true,
     },
     userId: {
         type: mongoose.Types.ObjectId,
         ref: 'User',
         required: true
     },
-
-})
+    description: {
+        type: String
+    }
+});
 
 const tagsSchema = new Schema({
 

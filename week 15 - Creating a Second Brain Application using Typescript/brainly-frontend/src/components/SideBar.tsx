@@ -16,31 +16,31 @@ export const SideBar = () => {
                 <div className="text-sm">
 
                     {/* Twitter */}
-                    <div className="py-2 flex gap-3 items-center hover:bg-slate-200 hover:rounded-md transition-all duration-150 hover:px-2 hover:cursor-pointer">
+                    <div className="py-2 flex gap-3 items-center hover:bg-slate-200 hover:rounded-md transition-all duration-150 hover:px-2 hover:cursor-pointer hover:scale-105">
                         <TweetIcon size="md"/>
                         Tweets
                     </div>
 
                     {/* Videos */}
-                    <div className="py-2 flex gap-3 items-center hover:bg-slate-200 hover:rounded-md transition-all duration-150 hover:px-2 hover:cursor-pointer">
+                    <div className="py-2 flex gap-3 items-center hover:bg-slate-200 hover:rounded-md transition-all duration-150 hover:px-2 hover:cursor-pointer hover:scale-105">
                     <VideoIcon size="md"/>
                         Videos
                     </div>
 
                     {/* Documents */}
-                    <div className="py-2 flex gap-3 items-center hover:bg-slate-200 hover:rounded-md transition-all duration-150 hover:px-2 hover:cursor-pointer">
+                    <div className="py-2 flex gap-3 items-center hover:bg-slate-200 hover:rounded-md transition-all duration-150 hover:px-2 hover:cursor-pointer hover:scale-105">
                     <DocumentIcon size="md"/>
                         Documents
                     </div>
 
                     {/* Links */}
-                    <div className="py-2 flex gap-3 items-center hover:bg-slate-200 hover:rounded-md transition-all duration-150 hover:px-2 hover:cursor-pointer">
+                    <div className="py-2 flex gap-3 items-center hover:bg-slate-200 hover:rounded-md transition-all duration-150 hover:px-2 hover:cursor-pointer hover:scale-105">
                     <LinksIcon size="md"/>
                         Links
                     </div>
 
                     {/* Tags */}
-                    <div className="py-2 flex gap-3 items-center hover:bg-slate-200 hover:rounded-md transition-all duration-150 hover:px-2 hover:cursor-pointer">
+                    <div className="py-2 flex gap-3 items-center hover:bg-slate-200 hover:rounded-md transition-all duration-150 hover:px-2 hover:cursor-pointer hover:scale-105">
                     <TagsIcon size="md"/>
                         Tags
                     </div>

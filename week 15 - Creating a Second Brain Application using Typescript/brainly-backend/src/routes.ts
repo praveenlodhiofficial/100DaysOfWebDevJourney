@@ -95,7 +95,7 @@ appRouter.post('/content', authMiddleware, async (req: any, res: any) => {
         const { title, link, type, description } = req.body;
         const userId = req.userId.id
 
-        const createContent = contentModel.create({
+        const createContent = await contentModel.create({
             title,
             // tags,
             link,
@@ -112,9 +112,10 @@ appRouter.post('/content', authMiddleware, async (req: any, res: any) => {
 
     } catch (error) {
 
-        res.json({
-            message: 'unable to create content.'
-        })
+        console.error('Error creating content:', error);
+        res.status(500).json({
+            message: 'Unable to create content.'
+        });
     }
 })
 

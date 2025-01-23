@@ -19,13 +19,12 @@ const CreateContent = ({ onClose }) => {
     const linkRef = useRef<HTMLInputElement | null>(null);
 
     async function addContent() {
-
         const title = titleRef.current?.value;
         const link = linkRef.current?.value;
-
+    
         try {
             await axios.post(
-                `${BACKEND_URL}api/v1/content`,
+                `${BACKEND_URL}/api/v1/content`,
                 {
                     link,
                     title,
@@ -39,14 +38,19 @@ const CreateContent = ({ onClose }) => {
                 }
             );
             console.log("Content added successfully");
+            
+            // Trigger a content re-fetch
+            onClose(); // Close modal
+            window.location.reload(); // Simple solution, better: trigger hook state update
         } catch (error) {
             console.error("Error adding content", error);
         }
     }
+    
 
 
     return (
-        <div className="bg-black h-full w-screen absolute top-0 bg-opacity-85 flex justify-center items-center z-10">
+        <div className="fixed top-0 bg-black h-full w-screen bg-opacity-85 flex justify-center items-center z-10">
             <div className="border flex justify-center sm:max-w-40 lg:min-w-96 h-fit bg-white flex-col rounded-lg">
                 {/* Close Icon */}
                 <div className="flex justify-end p-2">
@@ -121,7 +125,6 @@ const CreateContent = ({ onClose }) => {
                             title="Submit"
                             size="md"
                             onClick={addContent}
-                        // type="submit"
                         />
                     </form>
                 </div>
