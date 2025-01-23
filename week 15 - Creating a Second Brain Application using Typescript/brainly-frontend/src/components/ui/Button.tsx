@@ -19,7 +19,7 @@ type Variant = "primary" | "secondary" | "tertiary";
 const variantStyles = {
   primary: "text-purple-600 bg-purple-300 min-w-36",
   secondary: "text-white bg-purple-600 min-w-36",
-  tertiary: "border rounded bg-black text-white w-full hover:bg-opacity-90 transition-all",
+  tertiary: "border  rounded bg-black text-white w-full hover:bg-opacity-90 transition-all",
 };
 
 const sizeStyles = {
@@ -30,7 +30,7 @@ const sizeStyles = {
 
 // ---------------------------------------> EXPORT FUNCTION
 
-export const Button: React.FC<ButtonProps> = ({ variant, title, startIcon, endIcon, size, onClick, loading, fullWidth }) => {
+export const Button: React.FC<ButtonProps> = ({ variant, title, startIcon, endIcon, size, onClick, loading}) => {
   return (
     <button
       onClick={!loading ? onClick : undefined} // Disable interaction when loading
