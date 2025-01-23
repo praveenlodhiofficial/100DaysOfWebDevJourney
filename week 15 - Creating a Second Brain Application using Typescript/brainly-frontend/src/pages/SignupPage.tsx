@@ -43,11 +43,10 @@ export const SignupPage = () => {
                     <h1 className="text-3xl text-center font-semibold uppercase">
                         Signup to Second Brain
                     </h1>
-                    <form
-                        onSubmit={(e) => {
-                            e.preventDefault();
-                            signup();
-                        }}
+                    <form onSubmit={(e) => {
+                        e.preventDefault();
+                        signup();
+                    }}
                         className="flex flex-col gap-2 text-sm"
                     >
                         {/* Username Input */}

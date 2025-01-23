@@ -14,19 +14,31 @@ import { random } from './utils'
 appRouter.post('/signup', async (req, res) => {
     try {
         const { username, email, password } = req.body;
-        const hashedPassword = await bcrypt.hash(password, 10)
 
-        const createUser = userModel.create({
-            username,
-            email,
-            password: hashedPassword
+        const doesUserExist = await userModel.findOne({
+            $or: [{ email }, { username }],
         })
 
-        res.json({
-            username,
-            email,
-            message: 'signup done successfully.'
-        })
+        if (doesUserExist) {
+            res.json({
+                message: 'user already exist in the database. Use different username or email.'
+            })
+            
+        } else {
+            const hashedPassword = await bcrypt.hash(password, 10)
+
+            const createUser = userModel.create({
+                username,
+                email,
+                password: hashedPassword
+            })
+
+            res.json({
+                username,
+                email,
+                message: 'signup done successfully.'
+            })
+        }
 
     } catch (error) {
 
@@ -38,17 +50,20 @@ appRouter.post('/signup', async (req, res) => {
 
 appRouter.post('/signin', async (req, res) => {
     try {
-        const { username, email, password } = req.body;
+        const { usernameOrEmail, password } = req.body;
 
         const doesUserExist = await userModel.findOne({
-            $or: [{ email }, { username }],
+            $or: [
+                { email: usernameOrEmail}, 
+                { username: usernameOrEmail }
+            ],
         })
 
         if (!doesUserExist) {
             res.json({
                 message: 'user does not exist in the database.'
             })
-        } 
+        }
 
         if (doesUserExist && doesUserExist.password) {
             const isPasswordMatching = await bcrypt.compare(password, doesUserExist.password)
@@ -202,8 +217,8 @@ appRouter.get('/brain/:shareLink', async (req: any, res: any) => {
         const link = await linkModel.findOne({ hash });
 
         if (!link) {
-            return res.status(404).json({ 
-                message: 'Link not found' 
+            return res.status(404).json({
+                message: 'Link not found'
             });
         }
 

@@ -1,4 +1,5 @@
 import React, { ReactElement } from "react";
+import { LoaderIcon } from "../../icons/LoaderIcon";
 
 // ---------------------------------------> INTERFACE
 
@@ -45,7 +46,11 @@ export const Button: React.FC<ButtonProps> = ({ variant, title, startIcon, endIc
       disabled={loading} // Prevent native events when loading
     >
       {loading ? (
-        <span className="loader"></span> // Replace with a spinner or "Loading..."
+        
+        <span className="flex items-center">
+        <LoaderIcon size="md"/>
+      </span>
+
       ) : (
         <>
           {startIcon} {title} {endIcon}
