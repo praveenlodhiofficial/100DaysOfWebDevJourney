@@ -91,19 +91,22 @@ appRouter.post('/signin', async (req, res) => {
 
 appRouter.post('/content', authMiddleware, async (req: any, res: any) => {
     try {
-        const { title, tags, link, type } = req.body;
+        // const { title, tags, link, type } = req.body;
+        const { title, link, type, description } = req.body;
         const userId = req.userId.id
 
         const createContent = contentModel.create({
             title,
-            tags,
+            // tags,
             link,
             type,
-            userId: userId
+            userId: userId,
+            description
         })
 
         res.json({
-            createContent: { title, tags, link, type },
+            // createContent: { title, tags, link, type },
+            createContent: { title, link, type, description },
             message: 'content created successfully.'
         })
 

@@ -2,12 +2,15 @@ import { useRef, useState } from "react";
 import { Button } from "../components/ui/Button";
 import { BACKEND_URL } from "../config";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export const SignupPage = () => {
+    const [isLoading, setIsLoading] = useState(false);
+    const navigate = useNavigate();
+
     const usernameRef = useRef<HTMLInputElement>(null);
     const emailRef = useRef<HTMLInputElement>(null);
     const passwordRef = useRef<HTMLInputElement>(null);
-    const [isLoading, setIsLoading] = useState(false);
 
     async function signup() {
         setIsLoading(true);
@@ -28,9 +31,13 @@ export const SignupPage = () => {
                 password,
             });
             alert("You have Signed Up.");
+            navigate('/signin')
+
+
         } catch (error) {
             console.error("Signup failed", error);
             alert("Failed to sign up. Please try again.");
+
         } finally {
             setIsLoading(false);
         }

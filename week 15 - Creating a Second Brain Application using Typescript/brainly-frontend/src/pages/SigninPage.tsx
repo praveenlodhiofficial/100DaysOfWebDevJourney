@@ -2,11 +2,15 @@ import { useRef, useState } from "react";
 import { Button } from "../components/ui/Button";
 import { BACKEND_URL } from "../config";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export const SigninPage = () => {
+
+    const [isLoading, setIsLoading] = useState(false);
+    const navigate = useNavigate();
+
     const usernameOrEmailRef = useRef<HTMLInputElement>(null);
     const passwordRef = useRef<HTMLInputElement>(null);
-    const [isLoading, setIsLoading] = useState(false);
 
     async function signin() {
         setIsLoading(true);
@@ -21,18 +25,32 @@ export const SigninPage = () => {
         }
 
         try {
-            await axios.post(BACKEND_URL + "api/v1/signin", {
+            // Make the sign-in request
+            const response = await axios.post(BACKEND_URL + "api/v1/signin", {
                 usernameOrEmail,
                 password,
             });
+
+            // Extract JWT token and store it in localStorage
+            const jwt = response.data.token;
+            localStorage.setItem("token", jwt);
             alert("You have signed in successfully.");
-        } catch (error) {
+
+            navigate('/dashboard')
+
+        } catch (error: any) {
             console.error("Signin failed", error);
-            alert("Failed to sign in. Please check your credentials and try again.");
+
+            // Provide a meaningful error message
+            const errorMessage =
+                error.response?.data?.message ||
+                "Failed to sign in. Please check your credentials and try again.";
+            alert(errorMessage);
         } finally {
             setIsLoading(false);
         }
     }
+
 
     return (
         <div className="bg-black bg-opacity-95 h-full w-screen absolute top-0 justify-center flex items-center z-10">

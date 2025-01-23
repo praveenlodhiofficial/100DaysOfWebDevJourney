@@ -1,16 +1,17 @@
-import React, { ReactElement } from "react";
+import React, { ReactElement, useState } from "react";
 import { LoaderIcon } from "../../icons/LoaderIcon";
 
 // ---------------------------------------> INTERFACE
 
 export interface ButtonProps {
   variant: Variant;
-  title: string | ReactElement;
+  title?: string | ReactElement;
   startIcon?: ReactElement;
   endIcon?: ReactElement;
   size: "sm" | "md" | "lg";
   onClick?: () => void;
   loading?: boolean
+  className?: string
 }
 
 type Variant = "primary" | "secondary" | "tertiary";
@@ -31,13 +32,23 @@ const sizeStyles = {
 
 // ---------------------------------------> EXPORT FUNCTION
 
-export const Button: React.FC<ButtonProps> = ({ variant, title, startIcon, endIcon, size, onClick, loading}) => {
+export const Button: React.FC<ButtonProps> = ({ variant, title, startIcon, endIcon, size, onClick, loading, className}) => {
+  // const [isClicked, setIsClicked] = useState(false);
+
+  // const handleClick = () => {
+  //   if (!loading) {
+  //     setIsClicked(true);
+  //     onClick?.();
+  //   }
+  // };
+
   return (
     <button
       onClick={!loading ? onClick : undefined} // Disable interaction when loading
 
       className={`
         flex items-center justify-center gap-2 
+        ${className || ""}
         ${variantStyles[variant]} 
         ${sizeStyles[size]} 
         ${loading ? "opacity-50 cursor-not-allowed" : ""}
