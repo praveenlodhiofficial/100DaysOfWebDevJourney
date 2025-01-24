@@ -1,22 +1,27 @@
-import { useState } from "react";
-import { Cards } from "../components/Card";
+import { useEffect, useState } from "react";
 import CreateContentModel from "../components/CreateContentModel";
 import { Header } from "../components/Header";
 import { SideBar } from "../components/SideBar";
 import { useContent } from "../hooks/useContent";
+import { Card } from "../components/Card";
 
 export const Dashboard = () => {
   const [createContent, setCreateContent] = useState(false);
-  const contents = useContent(); // Destructure loading and error states
+  const { contents, refresh } = useContent();
 
   const handleOpenModel = () => setCreateContent(true);
   const handleCloseModel = () => setCreateContent(false);
+
+  useEffect(() => {
+    refresh();
+  }, [createContent])
 
   return (
     <>
       {createContent && <CreateContentModel onClose={handleCloseModel} />}
 
       <div className="flex">
+
         {/* SideBar */}
         <SideBar />
 
@@ -25,33 +30,23 @@ export const Dashboard = () => {
           <Header open={handleOpenModel} />
 
           <div className="grid grid-cols-3 gap-5">
-            {contents && contents.map(({ type, link, title, description }) => (
-              `${<Cards
-                brainTitle={title}
-                brainLink={link}
-                brainType={type}
-                brainDescription={description}
+
+            {contents.map(({ type, link, title, description }) =>              
+              <Card
+                type={type}
+                link={link}
+                title={title}
+                description={description}
               />
-              }`
-            ))
-            }
+            )}
 
-            <Cards
-              brainTitle="LLM Tweet"
-              brainLink="https://twitter.com/praveenlodhi99/status/1873186043769630935?ref_src=twsrc%5Etfw"
-              brainType="twitter"
-              brainDescription=""
-            />
-
-            <Cards
-              brainTitle="Harkirat YT Video"
-              brainLink="https://www.youtube.com/embed/Qfd00VQ2W1Y?si"
-              brainType="youtube"
-              brainDescription="This ia a YT video from the Tushar Channel, about video transmission."
-            />
           </div>
         </div>
       </div>
     </>
   );
 };
+
+
+
+// https://x.com/CodeByPoonam/status/1882441160020676767

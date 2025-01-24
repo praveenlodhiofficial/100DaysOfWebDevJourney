@@ -21,7 +21,7 @@ const CreateContent = ({ onClose }) => {
     async function addContent() {
         const title = titleRef.current?.value;
         const link = linkRef.current?.value;
-    
+
         try {
             await axios.post(
                 `${BACKEND_URL}/api/v1/content`,
@@ -37,61 +37,60 @@ const CreateContent = ({ onClose }) => {
                     },
                 }
             );
+
             console.log("Content added successfully");
-            
-            // Trigger a content re-fetch
-            onClose(); // Close modal
-            window.location.reload(); // Simple solution, better: trigger hook state update
+            onClose();
+
         } catch (error) {
             console.error("Error adding content", error);
         }
     }
-    
-
 
     return (
         <div className="fixed top-0 bg-black h-full w-screen bg-opacity-85 flex justify-center items-center z-10">
             <div className="border flex justify-center sm:max-w-40 lg:min-w-96 h-fit bg-white flex-col rounded-lg">
-                {/* Close Icon */}
+
                 <div className="flex justify-end p-2">
                     <button className="cursor-pointer" onClick={onClose} aria-label="Close">
                         <CloseIcon size="lg" />
                     </button>
                 </div>
 
-                {/* Form Content */}
                 <div className="gap-3 flex flex-col p-4">
                     <h1 className="text-3xl text-center font-semibold">Create Content</h1>
 
                     <form
-                        onSubmit={(e) => {
-                            e.preventDefault();
-                            addContent();
-                        }}
+
                         className="flex flex-col gap-3 text-sm"
                     >
 
-                        {/* Title Input */}
+                        <label htmlFor="title" className="sr-only">Title</label>
                         <input
                             ref={titleRef}
                             type="text"
+                            id="title"
+                            name="title"
                             className="border w-full border-dashed border-black rounded px-2 py-1 text-black"
                             placeholder="Title"
                             aria-label="Title"
                         />
 
-                        {/* Link Input */}
+                        <label htmlFor="link" className="sr-only">Link</label>
                         <input
                             ref={linkRef}
                             type="text"
+                            id="link"
+                            name="link"
                             className="border w-full border-dashed border-black rounded px-2 py-1 text-black"
                             placeholder="Link"
                             aria-label="Link"
                         />
 
-                        {/* Description Box */}
+                        <label htmlFor="description" className="sr-only">Description</label>
                         <textarea
                             rows={5}
+                            id="description"
+                            name="description"
                             className="border w-full border-dashed border-black rounded px-2 py-1 text-black"
                             placeholder="Description"
                             value={description}
@@ -99,27 +98,28 @@ const CreateContent = ({ onClose }) => {
                             aria-label="Description"
                         ></textarea>
 
-                        <div className="flex gap-2 justify-center items-center"> 
+                        <div className="flex gap-2 justify-center items-center">
 
                             <Button
+                                type="button"
                                 variant="tertiary"
-                                startIcon={<TweetIcon size="md" color="white"/>}
+                                startIcon={<TweetIcon size="md" color="white" />}
                                 size="md"
                                 onClick={() => { setType(ContentType.Twitter) }}
-                                className={ type === ContentType.Twitter ? "shadow-md shadow-black" : "invert border-[#363434] border-dashed" }
+                                className={type === ContentType.Twitter ? "shadow-md shadow-black" : "invert border-[#363434] border-dashed"}
                             />
 
                             <Button
+                                type="button"
                                 variant="tertiary"
-                                startIcon={<VideoIcon size="md" color="white"/>}
+                                startIcon={<VideoIcon size="md" color="white" />}
                                 size="md"
                                 onClick={() => { setType(ContentType.Youtube) }}
-                                className={ type === ContentType.Youtube ? "shadow-md shadow-black" : "invert border-[#363434] border-dashed" }
+                                className={type === ContentType.Youtube ? "shadow-md shadow-black" : "invert border-[#363434] border-dashed"}
                             />
 
                         </div>
 
-                        {/* Submit Button */}
                         <Button
                             variant="tertiary"
                             title="Submit"

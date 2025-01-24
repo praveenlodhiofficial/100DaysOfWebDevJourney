@@ -50,12 +50,12 @@ appRouter.post('/signup', async (req, res) => {
 
 appRouter.post('/signin', async (req, res) => {
     try {
-        const { usernameOrEmail, password } = req.body;
+        const { username, email, password } = req.body;
 
         const doesUserExist = await userModel.findOne({
             $or: [
-                { email: usernameOrEmail}, 
-                { username: usernameOrEmail }
+                { email: email}, 
+                { username: username}
             ],
         })
 
@@ -105,7 +105,6 @@ appRouter.post('/content', authMiddleware, async (req: any, res: any) => {
         })
 
         res.json({
-            // createContent: { title, tags, link, type },
             createContent: { title, link, type, description },
             message: 'content created successfully.'
         })
@@ -146,10 +145,9 @@ appRouter.get('/content', authMiddleware, async (req: any, res: any) => {
 })
 
 appRouter.delete('/content', authMiddleware, async (req: any, res: any) => {
+    
     try {
         const userId = req.userId.id;
-
-        // Delete all content belonging to the user
         const deleteResult = await contentModel.deleteMany({ userId });
 
         if (deleteResult.deletedCount > 0) {

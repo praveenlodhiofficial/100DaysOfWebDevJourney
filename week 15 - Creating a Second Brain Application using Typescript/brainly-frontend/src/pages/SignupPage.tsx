@@ -31,7 +31,7 @@ export const SignupPage = () => {
                 password,
             });
             alert("You have Signed Up.");
-            navigate('/signin')
+            navigate('/signin');
 
 
         } catch (error) {
@@ -47,37 +47,44 @@ export const SignupPage = () => {
         <div className="bg-black bg-opacity-95 h-full w-screen absolute top-0 justify-center flex items-center z-10">
             <div className="border flex justify-center sm:max-w-94 h-fit bg-white flex-col rounded-lg">
                 <div className="bg-slate-100 gap-5 flex flex-col p-10 py-20">
+                    
                     <h1 className="text-3xl text-center font-semibold uppercase">
                         Signup to Second Brain
                     </h1>
+                    
                     <form onSubmit={(e) => {
                         e.preventDefault();
                         signup();
                     }}
                         className="flex flex-col gap-2 text-sm"
                     >
-                        {/* Username Input */}
+                        <label htmlFor="username" className="sr-only">Username</label>
                         <input
                             ref={usernameRef}
+                            id="username"
                             type="text"
                             className="border w-full rounded px-2 py-1 items-center text-black"
                             placeholder="Username"
                         />
-                        {/* Email Input */}
+
+                        <label htmlFor="email" className="sr-only">Email</label>
                         <input
                             ref={emailRef}
+                            id="email"
                             type="text"
                             className="border w-full rounded px-2 py-1 items-center text-black"
                             placeholder="Email"
                         />
-                        {/* Password Input */}
+
+                        <label htmlFor="password" className="sr-only">Password</label>
                         <input
                             ref={passwordRef}
+                            id="password"
                             type="password"
                             className="border w-full rounded px-2 py-1 items-center text-black"
                             placeholder="Password"
                         />
-                        {/* Signup Button */}
+
                         <Button
                             variant="tertiary"
                             title="Signup"
@@ -85,7 +92,9 @@ export const SignupPage = () => {
                             onClick={signup}
                             loading={isLoading}
                         />
+
                     </form>
+                    
                 </div>
             </div>
         </div>
