@@ -1,0 +1,31 @@
+{
+  "compilerOptions": {
+    /* Language and Environment */
+    "target": "es2016",                               
+    "module": "commonjs",                              
+    "rootDir": "./src",                                
+    "outDir": "./dist",                                
+    "esModuleInterop": true,                           
+    "forceConsistentCasingInFileNames": true,          
+    "strict": true,                                    
+    "skipLibCheck": true,                              
+
+    /* Modules */
+    "baseUrl": ".",                                    /* Set the base directory for resolving non-relative module names. */
+    "paths": {                                         
+      "@config": ["../config.ts"],                     /* Alias for the config file outside the src folder. */
+      "@src/*": ["./src/*"]                            /* Alias for modules within the src folder. */
+    },
+
+    /* Other Options */
+    "resolveJsonModule": true,                         /* Enable importing JSON files. */
+    "allowSyntheticDefaultImports": true,             /* Allow default imports from modules with no default export. */
+    "strictNullChecks": true                           /* Enable strict null checks. */
+  },
+  "include": [
+    "src/**/*",                                        /* Include all files in the src folder. */
+    "../config.ts",                                    /* Include the config file explicitly. */
+    // "./config.ts",                                    /* Include the config file explicitly. */
+  ],
+  "exclude": ["node_modules", "dist"]                 /* Exclude unnecessary directories. */
+}
