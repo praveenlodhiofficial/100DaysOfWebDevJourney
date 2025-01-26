@@ -14,13 +14,13 @@ appRouter.post('/signup', async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, 10)
 
         // --------------> TRANSACTION BEGIN
-        await pgClient.query('BEGIN;') 
+        await pgClient.query('BEGIN;')
 
-        const userQuery = await pgClient.query (`INSERT INTO users (username, email, password) VALUES ($1, $2, $3) RETURNING id`, [username, email, hashedPassword])
+        const userQuery = await pgClient.query(`INSERT INTO users (username, email, password) VALUES ($1, $2, $3) RETURNING id`, [username, email, hashedPassword])
         const user_Id = userQuery.rows[0].id
-        const addressesQuery = await pgClient.query (`INSERT INTO addresses (city, country, street, pincode, user_Id) VALUES ($1, $2, $3, $4, $5)`, [city, country, street, pincode, user_Id])
+        const addressesQuery = await pgClient.query(`INSERT INTO addresses (city, country, street, pincode, user_Id) VALUES ($1, $2, $3, $4, $5)`, [city, country, street, pincode, user_Id])
 
-        await pgClient.query('COMMIT;') 
+        await pgClient.query('COMMIT;')
         // --------------> TRANSACTION COMMIT
 
         res.json({
@@ -80,16 +80,23 @@ appRouter.post('/signin', async (req, res) => {
 appRouter.get('/metadata', async (req, res) => {
     const id = req.query.id         // url: api/v1/metadata?id=12
 
-    const metadata = await pgClient.query (
+    const metadata = await pgClient.query(
         `SELECT users.id, users.username, users.email, addresses.city, addresses.country, addresses.pincode, addresses.street 
         FROM users FULL JOIN addresses ON users.id = addresses.user_id WHERE users.id = $1; `,
         [id]
 
-        // inner join - dono table m entry present hogi tabhi fetch karna
-        // 
+        /* 
+        Imagine two circles representing two tables: {
+            INNER JOIN: The overlapping part.
+            LEFT JOIN: The entire left circle, including the overlapping part.
+            RIGHT JOIN: The entire right circle, including the overlapping part.
+            FULL JOIN: Both circles combined.
+            CROSS JOIN: Every element of one circle paired with every element of the other.
+        } 
+        */
     )
 
-    res.json ({
+    res.json({
         response: metadata.rows
     })
 })
