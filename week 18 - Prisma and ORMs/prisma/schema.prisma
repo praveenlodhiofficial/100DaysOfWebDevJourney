@@ -12,14 +12,20 @@ model User {
   username String @unique
   email    String @unique
   password String
-  todos       Todo[]                              // 1:N relationship
+  todos    Todo[] // 1:N relationship
 }
 
 model Todo {
   id          Int     @id @default(autoincrement())
   title       String
   description String
-  isDone        Boolean
+  isDone      Boolean
   userId      Int
-  user        User @relation(fields: [userId], references: [id])
+  user        User    @relation(fields: [userId], references: [id])
+}
+
+model cheak {
+  id      Int    @id
+  name    String
+  surname String
 }
