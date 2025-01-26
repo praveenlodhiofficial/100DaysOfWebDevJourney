@@ -12,10 +12,12 @@
   "description": "",
   "devDependencies": {
     "nodemon": "^3.1.9",
+    "prisma": "^6.2.1",
     "ts-node": "^10.9.1",
     "typescript": "^5.7.3"
   },
   "dependencies": {
+    "@prisma/client": "^6.2.1",
     "@types/bcrypt": "^5.0.2",
     "@types/express": "^5.0.0",
     "@types/jsonwebtoken": "^9.0.8",
