@@ -8,13 +8,21 @@ datasource db {
 }
 
 model Post {
-  id String @id @default(cuid())
-  slug String @unique
-  title String 
-  content String
-  isPublished Boolean? @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  title     String
+  content   String
+  isPublished Boolean @default(false) 
+  author    User     @relation(fields: [authorId], references: [id])
+  authorId  String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
-  @@unique([title, content])
+    @@unique([title, content])
+}
+model User {
+  id             String @id @default(cuid())
+  email          String @unique
+  hashedPassword String?
+  posts          Post[]
 }

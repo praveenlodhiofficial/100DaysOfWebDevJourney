@@ -9,7 +9,7 @@ interface Params {
 export default async function PostPage({ params }: Params) {  
   const post = await prisma.post.findUnique({
     where: {
-      slug: params.slug,
+      slug: params?.slug,
     },
   });
 

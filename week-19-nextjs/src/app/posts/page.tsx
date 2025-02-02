@@ -52,7 +52,6 @@ export default async function PostsPage() {
               className="border rounded-lg bg-transparent border-dashed py-2 px-3 w-full"
             />
 
-
             <button
               type="submit"
               className="rounded-lg bg-white  bg-opacity-10 py-2 px-3 w-full"
