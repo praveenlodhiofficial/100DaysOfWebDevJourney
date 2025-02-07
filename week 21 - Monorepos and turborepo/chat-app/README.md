@@ -1,3 +1,61 @@
+npm init -y
+
+"scripts": {
+    "build": "tsc -b",
+    "dev": "tsc -b && node dist/index.js"
+},
+
+npx tsc --init
+
+tsconfig.json
+
+{
+  "extends": "@repo/typescript-config/backend.json",
+  "compilerOptions": {
+    "rootDir": "./src",
+    "outDir": "./dist",
+  }
+}
+
+
+
+
+
+
+1. In http-server & ws-server -------------> npx tsc --init
+
+  "scripts": {
+    "build": "tsc -b",
+    "dev": "tsc -b && node dist/index.js"
+  },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # Turborepo starter
 
 This Turborepo starter is maintained by the Turborepo core team.
@@ -82,3 +140,27 @@ Learn more about the power of Turborepo:
 - [Filtering](https://turbo.build/repo/docs/core-concepts/monorepos/filtering)
 - [Configuration Options](https://turbo.build/repo/docs/reference/configuration)
 - [CLI Usage](https://turbo.build/repo/docs/reference/command-line-reference)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
