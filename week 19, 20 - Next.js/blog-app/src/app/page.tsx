@@ -1,9 +1,10 @@
 import React from 'react'
+import PostsPage from './posts/page'
 
 const page = () => {
   return (
     <div>
-      Home Page
+      <PostsPage/>
     </div>
   )
 }
