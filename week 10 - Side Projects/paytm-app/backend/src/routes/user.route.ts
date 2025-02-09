@@ -6,15 +6,19 @@ const appRouter = express.Router()
 const JWT_SECRET = 'praveen'
 
 import { UserModel } from '../schema/db'
+import { signin, signup } from '../schema/zod'
+import { authMiddleware } from '../middleware/user.middleware'
 
 // ------------------------------------>
 
 appRouter.post('/signup', async (req, res) => {
+
+    // signup.parse(req.body)
     const { username, firstname, lastname, password } = req.body
 
     try {
 
-        const doesUserExist = await UserModel.findOne ({
+        const doesUserExist = await UserModel.findOne({
             username: username
         })
 
@@ -53,8 +57,10 @@ appRouter.post('/signup', async (req, res) => {
 
 appRouter.post('/signin', async (req, res) => {
 
+    // signin.parse(req.body)
+    const { username, password } = req.body
+
     try {
-        const { username, password } = req.body
 
         const doesUserExist = await UserModel.findOne({
             username: username
@@ -93,6 +99,43 @@ appRouter.post('/signin', async (req, res) => {
 
 
 })
+
+appRouter.put('/edit', authMiddleware, async (req: any, res: any) => {
+
+    const userId = req.userId.id;
+    const { firstname, lastname, password } = req.body;
+
+    try {
+
+        const hashedPassword = password ? await bcrypt.hash(password, 5) : undefined;
+
+        const updatedUser = await UserModel.findByIdAndUpdate(
+            userId,
+            {
+                firstname,
+                lastname,
+                password: hashedPassword,
+            },
+            { new: true } // Return the updated document
+        );
+
+        if (!updatedUser) {
+            return res.status(404).json({ message: "User not found." });
+        }
+
+        res.json({
+            message: "User details updated successfully.",
+            updatedUser,
+        });
+
+    } catch (error) {
+
+        console.error("Error updating user details:", error);
+        res.status(500).json({ message: "Failed to update user details." });
+
+    }
+});
+
 
 // ------------------------------------>
 
