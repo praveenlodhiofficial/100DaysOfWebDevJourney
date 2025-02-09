@@ -136,6 +136,33 @@ appRouter.put('/edit', authMiddleware, async (req: any, res: any) => {
     }
 });
 
+appRouter.get('/search', async (req: any, res: any) => {
+    const { query } = req.query; 
+
+    if (!query) {
+        return res.status(400).json({ message: "Search query is required." });
+    }
+
+    try {
+
+        const users = await UserModel.find({
+            $or: [
+                { firstname: { $regex: query, $options: "i" } }, // "i" for case-insensitivity
+                { lastname: { $regex: query, $options: "i" } },
+            ],
+        });
+
+        res.json({ users });
+
+    } catch (error) {
+
+        console.error("Error searching users:", error);
+        res.status(500).json({ message: "Failed to search users." });
+
+    }
+});
+
+
 
 // ------------------------------------>
 
