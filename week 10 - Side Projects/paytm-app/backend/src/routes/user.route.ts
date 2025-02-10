@@ -137,20 +137,22 @@ appRouter.put('/edit', authMiddleware, async (req: any, res: any) => {
 });
 
 appRouter.get('/search', async (req: any, res: any) => {
-    const { query } = req.query; 
-
-    if (!query) {
-        return res.status(400).json({ message: "Search query is required." });
-    }
+    const { query = "" } = req.query; // Default to an empty string if no query is provided
 
     try {
 
-        const users = await UserModel.find({
+        const filteredUsers = await UserModel.find({
             $or: [
-                { firstname: { $regex: query, $options: "i" } }, // "i" for case-insensitivity
+                { firstname: { $regex: query, $options: "i" } },
                 { lastname: { $regex: query, $options: "i" } },
             ],
         });
+
+        const users = filteredUsers.map((user) => ({
+            username: user.username,
+            firstname: user.firstname,
+            lastname: user.lastname,
+        }));
 
         res.json({ users });
 
@@ -158,9 +160,10 @@ appRouter.get('/search', async (req: any, res: any) => {
 
         console.error("Error searching users:", error);
         res.status(500).json({ message: "Failed to search users." });
-
+  
     }
 });
+
 
 
 
