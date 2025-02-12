@@ -6,11 +6,13 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-import { appRouter } from './routes/user.route';
+import { userRouter } from './routes/user.route';
+import { accountRouter } from './routes/account.route';
 
 // ------------------------------------------------>
 
-app.use('/api/v1', appRouter);
+app.use('/api/v1', userRouter);
+app.use('/api/v1', accountRouter)
 
 // ------------------------------------------------>
 

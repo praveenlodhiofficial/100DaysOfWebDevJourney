@@ -2,7 +2,7 @@ import express from 'express'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 
-const appRouter = express.Router()
+const userRouter = express.Router()
 const JWT_SECRET = 'praveen'
 
 import { UserModel } from '../schema/db'
@@ -11,7 +11,7 @@ import { authMiddleware } from '../middleware/user.middleware'
 
 // ------------------------------------>
 
-appRouter.post('/signup', async (req, res) => {
+userRouter.post('/signup', async (req, res) => {
 
     // signup.parse(req.body)
     const { username, firstname, lastname, password } = req.body
@@ -55,7 +55,7 @@ appRouter.post('/signup', async (req, res) => {
     }
 })
 
-appRouter.post('/signin', async (req, res) => {
+userRouter.post('/signin', async (req, res) => {
 
     // signin.parse(req.body)
     const { username, password } = req.body
@@ -100,7 +100,7 @@ appRouter.post('/signin', async (req, res) => {
 
 })
 
-appRouter.put('/edit', authMiddleware, async (req: any, res: any) => {
+userRouter.put('/edit', authMiddleware, async (req: any, res: any) => {
 
     const userId = req.userId.id;
     const { firstname, lastname, password } = req.body;
@@ -136,7 +136,7 @@ appRouter.put('/edit', authMiddleware, async (req: any, res: any) => {
     }
 });
 
-appRouter.get('/search', async (req: any, res: any) => {
+userRouter.get('/search', async (req: any, res: any) => {
     const { query = "" } = req.query; // Default to an empty string if no query is provided
 
     try {
@@ -169,4 +169,4 @@ appRouter.get('/search', async (req: any, res: any) => {
 
 // ------------------------------------>
 
-export { appRouter }
+export { userRouter }
