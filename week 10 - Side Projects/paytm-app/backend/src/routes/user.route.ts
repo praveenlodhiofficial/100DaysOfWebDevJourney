@@ -154,7 +154,7 @@ userRouter.get('/search', async (req: any, res: any) => {
             lastname: user.lastname,
         }));
 
-        res.json({ users });
+        res.json({ users })
 
     } catch (error) {
 
