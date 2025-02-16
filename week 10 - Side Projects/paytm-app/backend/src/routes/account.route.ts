@@ -7,10 +7,13 @@ const  accountRouter = express.Router()
 
 accountRouter.get("/balance", authMiddleware, async (req: any, res: any) => {
     const account = await AccountModel.findOne ({
+
         userId: req.userId
+
     })
 
     res.json {
+        
         balance: account.balance
     }
 })
