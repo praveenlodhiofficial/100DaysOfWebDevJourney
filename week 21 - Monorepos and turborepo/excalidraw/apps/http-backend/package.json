@@ -7,11 +7,17 @@
     "start": "tsc -b && node dist/index.js",
     "dev": "tsc -b && node dist/index.js"
   },
+  "dependencies": {
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2"
+  },
+  "devDependencies": {
+    "@repo/typescript-config": "workspace:*",
+    "@types/express": "^5.0.0",
+    "@types/jsonwebtoken": "^9.0.9"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
-  "devDependencies": {
-    "@repo/typescript-config": "workspace:*"
-  }
+  "description": ""
 }

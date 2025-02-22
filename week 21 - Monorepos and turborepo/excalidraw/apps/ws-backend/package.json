@@ -7,11 +7,15 @@
     "start": "tsc -b && node dist/index.js",
     "dev": "tsc -b && node dist/index.js"
   },
+  "dependencies": {
+    "ws": "^8.18.1"
+  },
+  "devDependencies": {
+    "@repo/typescript-config": "workspace:*",
+    "@types/ws": "^8.5.14"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
-  "devDependencies": {
-    "@repo/typescript-config": "workspace:*"
-  }
+  "description": ""
 }
