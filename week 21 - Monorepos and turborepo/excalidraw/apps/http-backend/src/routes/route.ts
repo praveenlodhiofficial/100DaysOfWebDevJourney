@@ -13,7 +13,7 @@ appRouter.post('/signin', (req, res) => {
 
 });
 
-appRouter.post('/room', authMiddleware, (req, res) => {
+appRouter.post('/room', (req, res) => {
 
 });
 

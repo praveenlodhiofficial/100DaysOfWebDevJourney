@@ -38,7 +38,7 @@ export function authMiddleware(req: AuthRequest, res: Response, next: NextFuncti
 
         console.error(error);
         return res.status(500).json({
-            error: 'Internal server error'
+            error: 'http-middleware : Internal server error'
         });
 
     }
