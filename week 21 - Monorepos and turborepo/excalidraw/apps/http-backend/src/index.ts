@@ -1,9 +1,12 @@
 import express from 'express'
+
+// import { JWT_SECRET } from '@repo/backend-common/config'
 import { appRouter } from './routes/route';
-import { PORT } from './config';
 
 const app = express()
 app.use(express.json());
+
+const PORT = 3001
 
 // ------------------------------------------------------->
 
