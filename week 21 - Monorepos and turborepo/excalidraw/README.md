@@ -25,11 +25,16 @@ Steps
     - decode the token in the ws wserver as well, send the token to the ws werver in a query params for now
 
 6. packages
-    - create common-backend
-    - create common
+    - create common-backend (JWT_SECRET)
+    - create common (zod schema)
     - create db
 
 7. packages/db :
     - initialize prisma
         - pnpm i prisma
         - npx prisma init 
+    - define the schema in schema.prisma
+    - get yourself a DB url, paste it in .env
+    - npm prisma migrate dev 
+    - npx prisma db push
+    - npx prisma generate
