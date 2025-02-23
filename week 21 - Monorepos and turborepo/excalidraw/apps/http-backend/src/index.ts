@@ -1,6 +1,4 @@
 import express from 'express'
-
-// import { JWT_SECRET } from '@repo/backend-common/config'
 import { appRouter } from './routes/route';
 
 const app = express()
