@@ -25,5 +25,11 @@ Steps
     - decode the token in the ws wserver as well, send the token to the ws werver in a query params for now
 
 6. packages
-- create common-backend
-- create common
+    - create common-backend
+    - create common
+    - create db
+
+7. packages/db :
+    - initialize prisma
+        - pnpm i prisma
+        - npx prisma init 
