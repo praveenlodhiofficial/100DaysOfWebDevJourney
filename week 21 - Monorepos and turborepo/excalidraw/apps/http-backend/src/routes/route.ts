@@ -15,7 +15,7 @@ appRouter.post('/signup', async (req, res) => {
 
     if (!parsedData.success) {
         res.status(400).json({
-            error: parsedData.error,
+            error: parsedData.error.format(),
             message: 'Incorrect Inputs',
         });
         return;
@@ -59,7 +59,7 @@ appRouter.post('/signin', async (req, res) => {
 
     if (!parsedData.success) {
         res.status(400).json({
-            error: parsedData.error,
+            error: parsedData.error.format(),
             message: 'Invalid inputs',
         });
         return;
@@ -116,6 +116,10 @@ appRouter.post('/signin', async (req, res) => {
         });
     }
 });
+
+c
+
+
 
 // ------------------------------------------------------->
 
