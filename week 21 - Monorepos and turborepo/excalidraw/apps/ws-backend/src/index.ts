@@ -4,6 +4,16 @@ import { JWT_SECRET } from '@repo/backend-common/config';
 
 const wss = new WebSocketServer({ port: 8080 });
 
+//global user variable to store the state for state management
+
+interface User {
+    userId: string;
+    rooms: string[];
+    ws: WebSocket;
+}
+
+const users: User() = []
+
 function checkUser(token: string): string | null {
     try {
         const decoded = jwt.verify(token, JWT_SECRET);
@@ -31,10 +41,16 @@ wss.on('connection', (ws, request) => {
     const token = queryParams.get('token') || '';
     const userId = checkUser(token);
 
-    if (!userId) {
+    if (!userId === null) {
         ws.close(1003, 'User not authenticated');
         return;
     }
+
+    users.push ({
+        userId,
+        ws,
+        rooms: []
+    })
 
     ws.on('message', (data) => {
         ws.send(data); // Echo the received message back to the client
