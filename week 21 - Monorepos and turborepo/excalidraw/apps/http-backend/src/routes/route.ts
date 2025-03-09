@@ -117,7 +117,7 @@ appRouter.post('/signin', async (req, res) => {
     }
 });
 
-appRouter.post('/create-room',authMiddleware, async (req, res) => {
+appRouter.post('/create-room', authMiddleware, async (req, res) => {
     const parsedData = CreateRoomSchema.safeParse(req.body);
 
     if (!parsedData.success) {
@@ -132,6 +132,22 @@ appRouter.post('/create-room',authMiddleware, async (req, res) => {
     const userId = req.userId;
 
     try {
+        // Check if room with this slug already exists
+        const existingRoom = await prismaClient.room.findUnique({
+            where: {
+                slug: parsedData.data.slug
+            }
+        });
+
+        if (existingRoom) {
+            res.status(409).json({
+                message: 'Room with this slug already exists',
+                existingRoomId: existingRoom.id
+            });
+            return;
+        }
+
+        // If room doesn't exist, create it
         const room = await prismaClient.room.create({
             data: {
                 slug: parsedData.data.slug,
@@ -150,7 +166,56 @@ appRouter.post('/create-room',authMiddleware, async (req, res) => {
             message: 'Internal Server Error',
         });
     }
-})
+});
+
+appRouter.get('/chats/:roomId', async (req, res) => {
+    try {
+        // Validate and parse roomId
+        const roomId = Number(req.params.roomId);
+
+        // Check if room exists
+        const room = await prismaClient.room.findUnique({
+            where: { id: roomId },
+        });
+
+        if (!room) {
+            res.status(404).json({
+                success: false,
+                message: 'Room not found',
+            });
+            return;
+        }
+
+        // Get messages with additional useful fields
+        const messages = await prismaClient.chat.findMany({
+            where: {
+                roomId: roomId,
+            },
+            orderBy: {
+                id: 'desc', // Changed to createdAt for better clarity
+            },
+            take: 50,
+        });
+
+        res.status(200).json({
+            success: true,
+            data: {
+                roomId,
+                messages: messages,
+                count: messages.length,
+            },
+            message: 'Messages retrieved successfully',
+        });
+
+    } catch (error) {
+        console.error('Error fetching chats:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Internal Server Error',
+            error: (error as any).message,
+        });
+    }
+});
 
 
 // ------------------------------------------------------->
