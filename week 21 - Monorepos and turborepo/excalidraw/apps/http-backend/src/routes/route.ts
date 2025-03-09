@@ -117,8 +117,40 @@ appRouter.post('/signin', async (req, res) => {
     }
 });
 
-c
+appRouter.post('/create-room',authMiddleware, async (req, res) => {
+    const parsedData = CreateRoomSchema.safeParse(req.body);
 
+    if (!parsedData.success) {
+        res.status(400).json({
+            error: parsedData.error.format(),
+            message: 'Incorrect Inputs',
+        });
+        return;
+    }
+
+    // @ts-ignore
+    const userId = req.userId;
+
+    try {
+        const room = await prismaClient.room.create({
+            data: {
+                slug: parsedData.data.slug,
+                adminId: userId,
+            },
+        });
+
+        res.status(200).json({
+            roomId: room.id,
+            slug: room.slug,
+            message: 'Room created successfully',
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            message: 'Internal Server Error',
+        });
+    }
+})
 
 
 // ------------------------------------------------------->
