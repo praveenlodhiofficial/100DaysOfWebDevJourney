@@ -217,6 +217,35 @@ appRouter.get('/chats/:roomId', async (req, res) => {
     }
 });
 
+appRouter.get('/room/:slug', async (req, res) => {
+    try {
+        const slug = req.params.slug;
+        const room = await prismaClient.room.findFirst({
+            where: {
+                slug
+            }
+        });
+
+        if (!room) {
+            res.status(404).json({
+                error: 'Room not found'
+            });
+            return
+        }
+
+        res.status(200).json({
+            room
+        });
+
+    } catch (error) {
+
+        console.error(error);
+        res.status(500).json({
+            error: 'Internal Server Error'
+        });
+
+    }
+});
 
 // ------------------------------------------------------->
 
