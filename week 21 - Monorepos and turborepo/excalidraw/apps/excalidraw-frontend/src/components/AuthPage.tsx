@@ -1,49 +1,55 @@
 "use client";
 
 import Input from "@repo/ui/Input";
+import { useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation"; // Import usePathname
-
+import { usePathname } from "next/navigation";
+import { Button } from "@repo/ui/Button";
 export function AuthPage() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const pathname = usePathname();
+  const isSignIn = pathname === "/signin";
 
-  const pathname = usePathname(); // Get current pathname
-  const isSignIn = pathname === "/signin"; // Determine if we're on signin page
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log({ email, password });
+  };
 
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4">
       <div className="w-full max-w-md">
         <div className="bg-white shadow-md rounded-lg p-6 space-y-6">
-          {/* Header */}
-          <h1 className="text-3xl uppercase font-semibold text-center text-gray-800">
+          <h1 className="text-2xl font-semibold text-center text-gray-800">
             {isSignIn ? "Sign In" : "Sign Up"}
           </h1>
 
-          {/* Form */}
-          <form className="space-y-4">
-
-            {/* Email Input */}
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
               <Input
                 placeholder="Email"
                 type="email"
+                value={email}
+                onChange={setEmail}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
+            </div>
 
-            {/* Password Input */}
+            <div>
               <Input
                 placeholder="Password"
                 type="password"
+                value={password}
+                onChange={setPassword}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
+            </div>
 
             {/* Submit Button */}
-            <button
-              type="submit"
-              className="w-full py-2 px-4 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200"
-            >
-              {isSignIn ? "Sign In" : "Sign Up"}
-            </button>
-
+            <Button> {isSignIn ? "Sign In" : "Sign Up"} </Button>
+            
           </form>
 
-          {/* Switch Auth Type with Next.js Link */}
           <p className="text-center text-sm text-gray-600">
             {isSignIn ? "Need an account?" : "Already have an account?"}
             <Link

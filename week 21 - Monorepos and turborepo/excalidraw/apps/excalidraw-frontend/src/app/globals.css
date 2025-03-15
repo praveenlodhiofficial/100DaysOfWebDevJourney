@@ -1,4 +1,12 @@
 @import "tailwindcss";
+
+@layer utilities {
+  .backdrop-blur-md {
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px); /* For Safari support */
+  }
+}
+
 /* 
 :root {
   --background: #ffffff;
