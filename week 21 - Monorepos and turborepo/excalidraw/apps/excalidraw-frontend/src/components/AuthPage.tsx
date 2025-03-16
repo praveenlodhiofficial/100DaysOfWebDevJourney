@@ -5,6 +5,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "@repo/ui/Button";
+
 export function AuthPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -46,7 +47,9 @@ export function AuthPage() {
             </div>
 
             {/* Submit Button */}
-            <Button> {isSignIn ? "Sign In" : "Sign Up"} </Button>
+            <Button className="w-full py-2 px-4 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200"> 
+              {isSignIn ? "Sign In" : "Sign Up"} 
+            </Button>
             
           </form>
 
