@@ -48,7 +48,7 @@ export async function initDraw(
             const message = JSON.parse(event.data);
             if (message.type === "chat") {
                 const parsedShape = JSON.parse(message.message);
-                existingShapes.push(parsedShape);
+                existingShapes.push(parsedShape.getExistingShapes);
                 clearCanvas(existingShapes, ctx, canvas);
             }
         } catch (err) {
@@ -141,7 +141,7 @@ async function getExistingShapes(roomId: string) {
 
         const shapes = messages.map((message: { message: string }) => {
             const messageData = JSON.parse(message.message);
-            return messageData;
+            return messageData.shape;
         });
 
         console.log("Fetched shapes:", shapes);
