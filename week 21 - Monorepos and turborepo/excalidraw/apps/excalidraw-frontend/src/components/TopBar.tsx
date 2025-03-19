@@ -12,7 +12,7 @@ export function TopBar({
     setSelectedTool: (tool: Tool) => void
 }) {
     return (
-        <div className="fixed flex-col border gap-5 text-white  border-white rounded-md top-5 right-5 flex justify-between items-center px-3 py-2">
+        <div className="fixed bg-black flex-col border gap-5 text-white  border-white rounded-md top-5 right-5 flex justify-between items-center px-3 py-2">
 
             <IconButton
                 icon={<Pencil />}

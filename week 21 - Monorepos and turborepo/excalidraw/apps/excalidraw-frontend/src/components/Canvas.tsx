@@ -18,19 +18,22 @@ export function Canvas({
     const [game, setGame] = useState<Game>();
     const [selectedTool, setSelectedTool] = useState<Tool>("circle");
 
-    // Initialize the game
-    useEffect(() => {
-        if (canvasRef.current && !game) {
-            const newGame = new Game(canvasRef.current, roomId, socket);
-            newGame.setTool(selectedTool);
-            setGame(newGame);
-        }
-    }, [canvasRef, roomId, socket, selectedTool]);
-
     // Update the tool when it changes
     useEffect(() => {
         game?.setTool(selectedTool);
     }, [selectedTool, game]);
+
+    // Initialize the game
+    useEffect(() => {
+        if (canvasRef.current && !game) {
+            const newGame = new Game(canvasRef.current, roomId, socket);
+            setGame(newGame);
+
+            return () => {
+                newGame.destroyMouseHandlers();
+            }
+        }
+    }, [canvasRef, roomId, socket]);
 
     return (
         <>
