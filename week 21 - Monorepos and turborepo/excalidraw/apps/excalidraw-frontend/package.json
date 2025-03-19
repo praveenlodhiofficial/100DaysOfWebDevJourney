@@ -12,6 +12,7 @@
     "@repo/ui": "workspace:*",
     "@types/axios": "^0.14.4",
     "axios": "^1.8.2",
+    "lucide-react": "^0.483.0",
     "next": "15.2.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"

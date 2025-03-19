@@ -8,12 +8,17 @@ type Shape =
           y: number;
           width: number;
           height: number;
-      }
-    | {
+      } | {
           type: "circle";
           centerX: number;
           centerY: number;
           radius: number;
+      } | {
+          type: "line";
+          startX: number;
+          startY: number;
+          endX: number;
+          endY: number;
       };
 
 export async function initDraw(
@@ -43,12 +48,13 @@ export async function initDraw(
     // WebSocket integration
     socket.onopen = () => console.log("WebSocket connection established.");
     socket.onerror = (err) => console.error("WebSocket error:", err);
+    
     socket.onmessage = (event) => {
         try {
             const message = JSON.parse(event.data);
             if (message.type === "chat") {
                 const parsedShape = JSON.parse(message.message);
-                existingShapes.push(parsedShape.getExistingShapes);
+                existingShapes.push(parsedShape.shape);
                 clearCanvas(existingShapes, ctx, canvas);
             }
         } catch (err) {
@@ -82,7 +88,7 @@ export async function initDraw(
             x: startX,
             y: startY,
             width,
-            height,
+            height
         };
 
         existingShapes.push(shape);
@@ -101,15 +107,15 @@ export async function initDraw(
     });
 
     canvas.addEventListener("mousemove", (e) => {
-        if (!clicked) return;
+        if (clicked) {
+            const width = e.clientX - startX;
+            const height = e.clientY - startY;
 
-        const width = e.clientX - startX;
-        const height = e.clientY - startY;
-
-        // Clear and redraw during drag
-        clearCanvas(existingShapes, ctx, canvas);
-        ctx.strokeStyle = "white";
-        ctx.strokeRect(startX, startY, width, height);
+            // Clear and redraw during drag
+            clearCanvas(existingShapes, ctx, canvas);
+            ctx.strokeStyle = "white";
+            ctx.strokeRect(startX, startY, width, height);
+        }
     });
 }
 
