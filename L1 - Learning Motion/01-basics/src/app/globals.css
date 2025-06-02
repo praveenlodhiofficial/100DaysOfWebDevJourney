@@ -1,0 +1,17 @@
+@import "tailwindcss";
+
+body {
+  background-color: #101010;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
+}
+
+.box {
+  width: 100px;
+  height: 100px;
+  background-color: yellow;
+  border-radius: 100%;
+}
