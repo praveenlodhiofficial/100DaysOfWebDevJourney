@@ -4,14 +4,15 @@ import bcryptjs from "bcryptjs";
 import User from "@/models/user.model";
 import jwt from "jsonwebtoken";
 
-await connectDB();
+connectDB();
 
 export async function POST(request: NextRequest) {
   try {
     const reqBody = await request.json();
-    const { email, password, username } = reqBody;
+    const { email, password } = reqBody;
 
-    const user = await User.findOne({ email, username });
+    // user not found
+    const user = await User.findOne({ email });
 
     if (!user) {
       return NextResponse.json(
@@ -20,6 +21,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // password is incorrect
     const validPassword = await bcryptjs.compare(password, user.password);
 
     if (!validPassword) {
@@ -29,6 +31,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // create token
     const tokenData = {
       id: user._id,
       username: user.username,
@@ -42,8 +45,6 @@ export async function POST(request: NextRequest) {
     const response = NextResponse.json({
       message: "Login successful",
       success: true,
-      user: user,
-      token: token,
     });
 
     response.cookies.set("token", token, { httpOnly: true });

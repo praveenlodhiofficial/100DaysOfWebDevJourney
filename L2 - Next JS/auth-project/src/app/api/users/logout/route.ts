@@ -1,4 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
+import { connectDB } from "@/db/dbConfig";
+
+connectDB();
 
 export async function GET(request: NextRequest) {
   try {
