@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@types/bcryptjs": "^3.0.0",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/mongoose": "^5.11.97",
     "@types/nodemailer": "^6.4.17",
     "bcryptjs": "^3.0.2",
@@ -24,6 +25,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "jsonwebtoken": "^9.0.2",
     "tailwindcss": "^4",
     "typescript": "^5"
   }
