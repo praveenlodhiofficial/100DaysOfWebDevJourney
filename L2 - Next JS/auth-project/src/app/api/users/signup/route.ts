@@ -51,6 +51,15 @@ export async function POST(request: NextRequest) {
       savedUser,
     });
   } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.log("unable to proceed create user request.");
+    console.log(error.message);
+    return NextResponse.json(
+      {
+        message: "Unable to proceed create user request.",
+        error: error.message,
+        success: false,
+      },
+      { status: 500 }
+    );
   }
 }

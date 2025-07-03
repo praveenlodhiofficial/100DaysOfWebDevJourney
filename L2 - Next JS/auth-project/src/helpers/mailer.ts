@@ -50,7 +50,7 @@ export const sendEmail = async ({ email, emailType, userId }: any) => {
           }</p>
           
           <div style="text-align: center; margin: 30px 0;">
-            <a href="${process.env.DOMAIN}/verifyemail?token=${hashedToken}" 
+            <a href="${process.env.DOMAIN}/verify-email?token=${hashedToken}" 
                style="background-color: #007bff; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block;">
               ${emailType === "VERIFY" ? "Verify Email" : "Reset Password"}
             </a>
@@ -58,7 +58,7 @@ export const sendEmail = async ({ email, emailType, userId }: any) => {
           
           <p>If the button doesn't work, you can copy and paste this link into your browser:</p>
           <p style="word-break: break-all; color: #007bff; background-color: #f8f9fa; padding: 10px; border-radius: 3px;">
-            ${process.env.DOMAIN}/verifyemail?token=${hashedToken}
+            ${process.env.DOMAIN}/verify-email?token=${hashedToken}
           </p>
           
           <p style="color: #666; font-size: 14px;">This link will expire in 1 hour for security reasons.</p>
