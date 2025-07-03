@@ -12,7 +12,11 @@ export interface IVideo {
   thumbnailURL: string;
   _id: mongoose.Types.ObjectId;
   controls?: Boolean;
-  transformation?: [height: number, width: number, quality?: number];
+  transformation?: {
+    height: number;
+    width: number;
+    quality?: number;
+  };
   createdAt?: Date;
   UpdatedAt?: Date;
 }

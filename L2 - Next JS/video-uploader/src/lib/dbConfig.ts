@@ -1,5 +1,4 @@
 import mongoose, { connect } from "mongoose";
-import { cache } from "react";
 
 const MONGO_URI = process.env.MONGO_URI!;
 
