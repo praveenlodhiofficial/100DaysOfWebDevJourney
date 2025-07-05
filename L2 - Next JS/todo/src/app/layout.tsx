@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
+import "..styles/globals.css";
 import { connectDB } from "@/lib/dbConfig";
 
 // Connect to MongoDB when the app starts
