@@ -18,7 +18,6 @@ const userSchema = new Schema<IUser>(
     },
     password: {
       type: String,
-      unique: true,
       required: [true, "Please provide password"],
     },
   },

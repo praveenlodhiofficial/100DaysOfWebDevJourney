@@ -12,20 +12,21 @@ export async function POST(request: NextRequest) {
         { error: "Email and password are required" },
         { status: 400 }
       );
+    }
 
-      await connectDB();
+    await connectDB();
 
-      const user = await User.findOne({ email });
+    const user = await User.findOne({ email });
 
-      if (!user) {
-        return NextResponse.json(
-          {
-            error: "user already exist in the database.",
-            success: false,
-          },
-          { status: 400 }
-        );
-      }
+    if (user) {
+      return NextResponse.json(
+        {
+          error: "User already exists in the database.",
+          success: false,
+        },
+        { status: 400 }
+      );
+    }
 
       const salt = await bcryptjs.genSalt(10);
       const hashedPassword = await bcryptjs.hash(password, salt);
@@ -45,7 +46,6 @@ export async function POST(request: NextRequest) {
         },
         { status: 200 }
       );
-    }
   } catch (error: any) {
     console.log("registration error", error);
     return NextResponse.json({
