@@ -1,31 +1,30 @@
 import mongoose, { model, models, Schema } from "mongoose";
 
 interface ITodo {
-  _id: mongoose.Types.ObjectId;
-  title: String;
-  description: String;
-  isCompleted: Boolean;
+  title: string;
+  description: string;
+  status: string;
   createdAt: Date;
+  updatedAt: Date;
 }
 
 const todoSchema = new Schema<ITodo>(
   {
-    title: {
+    title: { type: String, required: true },
+    description: { type: String, required: true },
+    status: {
       type: String,
-      required: [true, "Please provide the title for the todo"],
+      enum: ["pending", "completed", "in_progress"],
+      default: "pending",
     },
-    description: {
-      type: String,
-      required: [true, "Please provide the description for the todo"],
-    },
-    isCompleted: {
-      type: Boolean,
-      default: false,
-    },
+    createdAt: { type: Date, default: Date.now },
+    updatedAt: { type: Date, default: Date.now },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+  }
 );
 
-const Todo = models.Todo || model("Todo", todoSchema);
+const Todo = models.Todo || model<ITodo>("Todo", todoSchema);
 
 export default Todo;

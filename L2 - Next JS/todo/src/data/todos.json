@@ -1,0 +1,52 @@
+[
+    {
+        "title": "Book doctor appointment",
+        "description": "Schedule a health check-up appointment",
+        "status": "pending"
+    },
+    {
+        "title": "Finish project report",
+        "description": "Complete the final draft of the project report",
+        "status": "in_progress"
+    },
+    {
+        "title": "Buy groceries",
+        "description": "Milk, bread, eggs, and vegetables",
+        "status": "completed"
+    },
+    {
+        "title": "Pay electricity bill",
+        "description": "Pay the bill before the due date to avoid penalty",
+        "status": "pending"
+    },
+    {
+        "title": "Prepare presentation",
+        "description": "Create slides for the upcoming team meeting",
+        "status": "in_progress"
+    },
+    {
+        "title": "Call insurance agent",
+        "description": "Discuss policy renewal options",
+        "status": "completed"
+    },
+    {
+        "title": "Clean the house",
+        "description": "Do a thorough cleaning of the living room and kitchen",
+        "status": "pending"
+    },
+    {
+        "title": "Submit tax documents",
+        "description": "Send all required documents to the accountant",
+        "status": "in_progress"
+    },
+    {
+        "title": "Attend workshop",
+        "description": "Participate in the online workshop on productivity",
+        "status": "completed"
+    },
+    {
+        "title": "Update resume",
+        "description": "Add recent projects and experiences to the resume",
+        "status": "pending"
+    }
+]

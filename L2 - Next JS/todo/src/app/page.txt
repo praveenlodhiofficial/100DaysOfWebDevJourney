@@ -1,0 +1,102 @@
+import Container from "@/components/Container";
+
+interface TodoItem {
+  _id: string;
+  title: string;
+  description: string;
+  status: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+async function getTodos(): Promise<TodoItem[]> {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"}/api/todo`,
+      {
+        cache: "no-store",
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch todos");
+    }
+
+    const data = await response.json();
+    const todos = data.getAllTodos || [];
+
+    return todos.map((todo: any) => ({
+      _id: todo._id,
+      title: todo.title,
+      description: todo.description,
+      status: todo.status,
+      createdAt: new Date(todo.createdAt).toISOString(),
+      updatedAt: new Date(todo.updatedAt).toISOString(),
+    }));
+  } catch (error) {
+    console.error("Error fetching todos:", error);
+    return [];
+  }
+}
+
+export default async function Home() {
+  const todos = await getTodos();
+
+  return (
+    <Container className="min-h-screen p-8">
+      <div className="max-w-4xl mx-auto">
+        <h1 className="text-4xl font-bold text-center mb-8">All Todos</h1>
+
+        {todos.length === 0 ? (
+          <div className="text-center text-gray-500 text-xl">
+            No todos found. Create your first todo!
+          </div>
+        ) : (
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {todos.map((todo) => (
+              <div
+                key={todo._id}
+                className={`p-6 rounded-lg border-2 ${
+                  todo.status
+                    ? "bg-green-50 border-green-200"
+                    : "bg-white border-gray-200"
+                } shadow-sm hover:shadow-md transition-shadow`}
+              >
+                <h3
+                  className={`text-lg font-semibold mb-2 ${
+                    todo.status
+                      ? "line-through text-gray-500"
+                      : "text-gray-800"
+                  }`}
+                >
+                  {todo.title}
+                </h3>
+                <p
+                  className={`text-sm mb-4 ${
+                    todo.status ? "text-gray-400" : "text-gray-600"
+                  }`}
+                >
+                  {todo.description}
+                </p>
+                <div className="flex items-center justify-between">
+                  <span
+                    className={`px-2 py-1 rounded-full text-xs font-medium ${
+                      todo.status
+                        ? "bg-green-100 text-green-800"
+                        : "bg-yellow-100 text-yellow-800"
+                    }`}
+                  >
+                    {todo.status ? "status" : "Pending"}
+                  </span>
+                  <span className="text-xs text-gray-400">
+                    {new Date(todo.createdAt).toLocaleDateString()}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </Container>
+  );
+}

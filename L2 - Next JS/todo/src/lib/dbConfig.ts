@@ -1,9 +1,9 @@
-import mongoose from "mongoose";
+import mongoose, { connect } from "mongoose";
 
 let MONGO_URI = process.env.MONGO_URI!;
 
 if (!MONGO_URI) {
-  throw new Error("Provode 'MONGO_URI' in the environment varibles.");
+  throw new Error("Provide 'MONGO_URI' in the environment variables.");
 }
 
 let cached = global.mongoose;
@@ -25,24 +25,23 @@ export async function connectDB() {
       bufferCommands: true,
       maxPoolSize: 10,
     };
-    cached.promise = mongoose
-      .connect(MONGO_URI, Options)
+    cached.promise = connect(MONGO_URI, Options)
       .then(() => {
         console.log("✅ MongoDB connected successfully!");
         return mongoose.connection;
       })
-      .catch((error) => {
-        console.error("❌ MongoDB connection failed:", error);
-        throw error;
+      .catch((err) => {
+        console.log("❌ MongoDB connection failed!");
+        throw err;
       });
   }
 
   try {
-    cached.connection = await cached.promise;
+    await cached.promise;
   } catch (error) {
-    console.error("❌ Failed to establish MongoDB connection:", error);
+    console.log("❌ MongoDB connection failed!");
     throw error;
   }
 
-  return mongoose.connection;
+  return cached.promise;
 }

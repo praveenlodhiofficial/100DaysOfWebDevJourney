@@ -8,7 +8,7 @@ The Todo List app enables users to:
 
 - Add new tasks with a title
 - View all tasks in a list
-- Mark tasks as completed or incomplete
+- Mark tasks as status or incomplete
 - Delete tasks
 
 This project is designed to strengthen your full-stack development skills while keeping the scope simple and achievable for a beginner.
@@ -73,7 +73,7 @@ Define the structure for storing tasks in MongoDB using Mongoose within Next.js.
 ### Schema Fields
 
 - `title`: String, required (the task description)
-- `completed`: Boolean, default to false (indicates if the task is completed)
+- `status`: Boolean, default to false (indicates if the task is status)
 - `createdAt`: Date, default to the current timestamp (tracks task creation time)
 
 ## API Development
@@ -103,7 +103,7 @@ Write the following API endpoints:
 - `GET /api/tasks`: Retrieve all tasks
 - `POST /api/tasks`: Create a new task (expects title in the request body)
 - `GET /api/tasks/[id]`: Retrieve a specific task by ID
-- `PUT /api/tasks/[id]`: Update a task's title or completed status by its ID
+- `PUT /api/tasks/[id]`: Update a task's title or status status by its ID
 - `DELETE /api/tasks/[id]`: Delete a task by its ID
 
 #### 4. Test APIs
@@ -221,7 +221,7 @@ Use Next.js fetch API or create custom functions:
 
 - `fetch('/api/tasks')`: Fetch tasks on page load
 - `fetch('/api/tasks', { method: 'POST', body: JSON.stringify({ title }) })`: Create a new task
-- `fetch('/api/tasks/[id]', { method: 'PUT', body: JSON.stringify({ completed }) })`: Update task status
+- `fetch('/api/tasks/[id]', { method: 'PUT', body: JSON.stringify({ status }) })`: Update task status
 - `fetch('/api/tasks/[id]', { method: 'DELETE' })`: Delete a task
 
 ### State Management

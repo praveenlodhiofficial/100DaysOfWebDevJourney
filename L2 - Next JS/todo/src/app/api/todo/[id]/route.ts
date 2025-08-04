@@ -1,91 +1,87 @@
-import Todo from "@/models/todo.model";
-import mongoose from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
+import Todo from "@/models/todo.model";
+import { connectDB } from "@/lib/dbConfig";
 
-export async function PUT(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+// delete a todo - using params
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: { id: string } }
 ) {
   try {
-    const { title, description } = await request.json();
-    const { id: todoId } = await params;
+    await connectDB();
+    const { id } = await params;
 
-    if (!mongoose.Types.ObjectId.isValid(todoId)) {
+    if (!id) {
       return NextResponse.json({
-        error: "id is not valid",
         success: false,
+        message: "Todo ID is required",
       });
     }
 
-    const updatedTodo = await Todo.findByIdAndUpdate(todoId, {
-      title,
-      description,
-    });
+    const todo = await Todo.findByIdAndDelete(id);
 
-    return NextResponse.json(
-      {
-        message: "Todo updated successfully",
-        success: true,
-      },
-      { status: 200 }
-    );
+    return NextResponse.json({
+      success: true,
+      message: "Todo deleted successfully",
+      todo,
+    });
   } catch (error) {
     return NextResponse.json(
       {
-        message: "Unable to update todo",
         success: false,
+        message: "Failed to delete todo",
       },
       { status: 500 }
     );
   }
 }
 
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+// update a todo - using params
+export async function PUT(
+  req: NextRequest,
+  { params }: { params: { id: string } }
 ) {
   try {
-    const { id: todoId } = await params;
+    await connectDB();
+    const { id } = await params;
+    const { title, description, status } = await req.json();
 
-    if (!mongoose.Types.ObjectId.isValid(todoId)) {
-      return NextResponse.json({
-        error: "id is not valid",
-        success: false,
-      });
-    }
-
-    // First find the todo to get its data before deletion
-    const todoToDelete = await Todo.findById(todoId);
-
-    if (!todoToDelete) {
+    if (!title || !description || status === undefined || !id) {
       return NextResponse.json(
         {
-          error: "Todo not found",
           success: false,
+          message: "Title, description and status are required",
+        },
+        { status: 400 }
+      );
+    }
+
+    const todo = await Todo.findByIdAndUpdate(
+      id,
+      { title, description, status },
+      { new: true }
+    );
+
+    if (!todo) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Todo not found",
         },
         { status: 404 }
       );
     }
 
-    // Delete the todo
-    await Todo.findByIdAndDelete(todoId);
-
-    return NextResponse.json(
-      {
-        message: "Todo deleted successfully",
-        success: true,
-        deletedTodo: {
-          title: todoToDelete.title,
-          description: todoToDelete.description,
-        },
-      },
-      { status: 200 }
-    );
+    return NextResponse.json({
+      success: true,
+      message: "Todo updated successfully",
+      todo,
+    });
   } catch (error) {
     return NextResponse.json(
       {
-        error: "unable to delete todo",
         success: false,
+        message: "Failed to update todo",
       },
       { status: 500 }
     );
