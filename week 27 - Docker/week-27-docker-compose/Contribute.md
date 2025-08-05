@@ -23,14 +23,17 @@
    ```bash
    npx prisma migrate dev
    ```
+
 7. Generate the Prisma client:
    ```bash
    npx prisma generate
    ```
+
 8. Build the project:
    ```bash
    npm run build
    ```
+
 9. Start the server:
    ```bash
    npm run start
@@ -50,28 +53,45 @@
    docker run --network user_project_network --name postgres -e POSTGRES_PASSWORD=mysecretpassword -d -p 5432:5432 postgres
    ```
 
-3. Build the image:
+4. Build the image:
    ```bash
-   docker build --network=host -t user_project .
+   docker build -t user_project .
    ```
 
-4. Run the container / Start the image:
+5. Run the container / Start the image:
    ```bash
-   docker run -e DATABASE_URL="postgresql://postgres:mysecretpassword@localhost:5432/postgres" --network user_project_network -d -p 3000:3000 user_project
+   docker run \
+   --name user_project_container \
+   -e DATABASE_URL="postgresql://postgres:mysecretpassword@localhost:5432/postgres" \
+   --network user_project_network \
+   -d -p 3000:3000 user_project
    ```
 
 ## Docker Compose Installation
 
-1. Install Docker Desktop, docker-compose
+1. Install Docker Desktop and Docker Compose
 
 2. Run the following command to start the project:
    ```bash
    docker-compose up
    ```
 
-3. Stop the project:
+3. To run in detached mode (background):
+   ```bash
+   docker-compose up -d
+   ```
+
+4. Stop the project:
    ```bash
    docker-compose down
    ```
 
-*Coming soon...*
+5. View logs:
+   ```bash
+   docker-compose logs -f
+   ```
+
+6. Rebuild and start:
+   ```bash
+   docker-compose up --build
+   ```

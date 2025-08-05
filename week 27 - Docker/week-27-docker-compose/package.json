@@ -2,15 +2,19 @@
   "name": "week-25-docker-compose",
   "version": "1.0.0",
   "description": "",
+  "type": "module",
   "main": "index.js",
   "scripts": {
     "build": "tsc -b",
-    "start": "node dist/index.js"
+    "dev": "npm run build && node dist/index.js",
+    "dev:docker": "npx prisma migrate dev && node dist/index.js",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "postinstall": "prisma generate"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "module",
   "dependencies": {
     "@prisma/client": "^6.13.0",
     "@types/express": "^5.0.3",

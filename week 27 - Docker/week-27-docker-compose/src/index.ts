@@ -1,30 +1,46 @@
-import { PrismaClient } from "./generated/prisma/index.js";
+import { PrismaClient } from "@prisma/client";
 import express from "express";
 
 const app = express();
 const prismaClient = new PrismaClient();
 
 app.post("/", async (req, res) => {
-  const user = await prismaClient.user.create({
-    data: {
-      username: Math.random().toString(),
-      password: Math.random().toString(),
-    },
-  });
-  res.send({
-    success: true,
-    user,
-    message: "User created successfully",
-  });
+  try {
+    const user = await prismaClient.user.create({
+      data: {
+        username: Math.random().toString(),
+        password: Math.random().toString(),
+      },
+    });
+    res.send({
+      success: true,
+      user,
+      message: "User created successfully",
+    });
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      message: "Error creating user",
+      error: error instanceof Error ? error.message : "Unknown error"
+    });
+  }
 });
 
 app.get("/", async (req, res) => {
-  const users = await prismaClient.user.findMany();
-  res.send({
-    success: true,
-    users,
-    message: "Users fetched successfully",
-  });
+  try {
+    const users = await prismaClient.user.findMany();
+    res.send({
+      success: true,
+      users,
+      message: "Users fetched successfully",
+    });
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      message: "Error fetching users",
+      error: error instanceof Error ? error.message : "Unknown error"
+    });
+  }
 });
 
 app.listen(3000, () => {
