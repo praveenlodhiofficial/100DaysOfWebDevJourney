@@ -1,0 +1,29 @@
+## Build the docker image
+## Push the docker image to the registry (docker hub)
+## SSH into our VM and start the new image
+
+name: Deploy the WebSocket Server
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Docker login
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}  # Use DOCKERHUB_USERNAME
+          password: ${{ secrets.DOCKER_TOKEN }}  # Use DOCKERHUB_TOKEN
+
+      - name: Build and push the docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./docker/Dockerfile.ws-server
+          push: true
+          tags: ${{ secrets.DOCKER_USERNAME }}/todo-app-ws-server:${{ github.sha }}  # Use the commit SHA as the tag
