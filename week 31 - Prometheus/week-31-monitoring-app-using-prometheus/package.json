@@ -1,8 +1,12 @@
 {
   "name": "week-31-monitoring-app-using-prometheus",
-  "module": "index.ts",
+  "module": "src/index.ts",
   "type": "module",
   "private": true,
+  "scripts": {
+    "start": "bun run src/index.ts",
+    "dev": "bun run --watch src/index.ts"
+  },
   "devDependencies": {
     "@types/bun": "latest"
   },
